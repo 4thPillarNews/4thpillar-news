@@ -1,26 +1,12 @@
 [
-  {
-    "title": "पीएम मोदी ने एआई मिशन लॉन्च किया",
-    "desc": "प्रधानमंत्री ने 5000 करोड़ के एआई मिशन का ऐलान किया।",
-    "description": "प्रधानमंत्री ने 5000 करोड़ के एआई मिशन का ऐलान किया।",
-    "date": "05 Sep 2026, 09:00 PM",
-    "author": "Gaurav Sharma - 4thPillar News",
-    "image": "https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg"
-  },
-  {
-    "title": "भारत ने वर्ल्ड कप क्वालीफायर जीता",
-    "desc": "विराट के शतक से भारत ने क्वालीफायर जीता।",
-    "description": "विराट के शतक से भारत ने क्वालीफायर जीता।",
-    "date": "05 Sep 2026, 09:00 PM",
-    "author": "Gaurav Sharma - 4thPillar News",
-    "image": "https://images.pexels.com/photos/46798/the-ball-stadion-football-the-pitch-46798.jpeg"
-  },
-  {
-    "title": "दिल्ली में बारिश, मौसम सुहाना",
-    "desc": "बारिश के बाद दिल्ली का मौसम सुहाना हो गया।",
-    "description": "बारिश के बाद दिल्ली का मौसम सुहाना हो गया।",
-    "date": "05 Sep 2026, 09:00 PM",
-    "author": "Gaurav Sharma - 4thPillar News",
-    "image": "https://images.pexels.com/photos/1118873/pexels-photo-1118873.jpeg"
-  }
+  {"title": "गाजियाबाद: GDA का बुलडोजर एक्शन", "desc": "इंदिरापुरम में अवैध निर्माण पर GDA ने कार्रवाई की।", "author": "Gaurav Sharma", "date": "6 सितंबर 2026", "image": "the4thpillarnews.jpg"},
+  {"title": "National: पीएम मोदी का बड़ा ऐलान", "desc": "1 करोड़ युवाओं को स्किल ट्रेनिंग मिलेगी।", "author": "Gaurav Sharma", "date": "6 सितंबर 2026", "image": "the4thpillarnews.jpg"},
+  {"title": "International: अमेरिका ने वीजा नियम आसान किए", "desc": "भारतीयों के लिए वीजा वेटिंग 50% कम हुई।", "author": "Gaurav Sharma", "date": "6 सितंबर 2026", "image": "the4thpillarnews.jpg"},
+  {"title": "Sports: भारत ने जीता एशिया कप", "desc": "फाइनल में पाकिस्तान को 7 विकेट से हराया।", "author": "Gaurav Sharma", "date": "6 सितंबर 2026", "image": "the4thpillarnews.jpg"},
+  {"title": "गाजियाबाद: हिंडन से 3 नई फ्लाइट", "desc": "लखनऊ, जयपुर, इंदौर के लिए सीधी उड़ान शुरू।", "author": "Gaurav Sharma", "date": "6 सितंबर 2026", "image": "the4thpillarnews.jpg"},
+  {"title": "National: ISRO ने लॉन्च किया सैटेलाइट", "desc": "GSAT-24 सफलतापूर्वक लॉन्च, पीएम ने दी बधाई।", "author": "Gaurav Sharma", "date": "6 सितंबर 2026", "image": "the4thpillarnews.jpg"},
+  {"title": "International: दुबई में बुर्ज खलीफा पर तिरंगा", "desc": "तिरंगे की लाइटिंग से भारतीयों में जश्न।", "author": "Gaurav Sharma", "date": "6 सितंबर 2026", "image": "the4thpillarnews.jpg"},
+  {"title": "Sports: नीरज चोपड़ा ने जीता गोल्ड", "desc": "डायमंड लीग में 89 मीटर थ्रो कर गोल्ड जीता।", "author": "Gaurav Sharma", "date": "6 सितंबर 2026", "image": "the4thpillarnews.jpg"},
+  {"title": "Tech: iPhone 17 लॉन्च", "desc": "Apple ने iPhone 17 लॉन्च किया, कीमत 89900 से शुरू।", "author": "Gaurav Sharma", "date": "6 सितंबर 2026", "image": "the4thpillarnews.jpg"},
+  {"title": "Sports: IPL 2027 शेड्यूल जारी", "desc": "पहला मैच MI vs CSK, फाइनल अहमदाबाद में।", "author": "Gaurav Sharma", "date": "6 सितंबर 2026", "image": "the4thpillarnews.jpg"}
 ]
