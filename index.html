@@ -3,35 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>4thPILLAR - Sach Ka Chautha Stambh</title>
+<title>The 4th Pillar News - Gaurav Sharma</title>
 <style>
-body{font-family:Arial;background:#f4f6f9;margin:0}
-header{background:#0a1931;color:#fff;padding:15px;display:flex;align-items:center;gap:10px}
-header img{width:55px;height:55px;border-radius:50%}
-.container{max-width:900px;margin:auto;padding:15px}
-.card{background:#fff;border-radius:12px;margin-bottom:15px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
-.card img{width:100%;height:200px;object-fit:cover}
-.card-body{padding:14px}
-.card-body h2{font-size:18px;margin:0 0 8px}
-.meta{font-size:12px;color:#666;margin-bottom:8px}
-footer{background:#0a1931;color:#fff;text-align:center;padding:15px;margin-top:20px}
-footer a{color:#fff;margin:0 10px;text-decoration:none}
+body{font-family:Arial; margin:0; background:#f4f4f4;}
+header{background:#000; color:#fff; padding:15px; text-align:center; font-size:22px; font-weight:bold;}
+.container{max-width:800px; margin:20px auto; padding:10px;}
+.card{background:#fff; padding:15px; margin-bottom:15px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1);}
+.card h2{margin:0 0 10px 0; font-size:18px;}
+.card small{color:gray;}
 </style>
 </head>
 <body>
-<header><img src="the4thpillarnews.jpg"><div><b>4thPILLAR NEWS</b><br><small>Sach Ka Chautha Stambh</small></div></header>
-<div class="container"><div id="news">Loading...</div></div>
-<footer>
-<a href="about.html">About</a> | <a href="contact.html">Contact</a> | <a href="privacy.html">Privacy</a>
-<p>© 2026 4thPillar News | By Gaurav Sharma</p>
-</footer>
+<header>THE 4TH PILLAR NEWS</header>
+<div class="container" id="news-container">Loading...</div>
+
 <script>
-fetch('news.json').then(r=>r.json()).then(d=>{
- let html='';
- d.forEach(n=>{
-   html+=`<div class="card"><img src="${n.image}"><div class="card-body"><h2>${n.title}</h2><div class="meta">By ${n.author || 'Gaurav Sharma - 4thPillar News'} | ${n.date || ''}</div><p>${n.desc || n.description || ''}</p></div></div>`;
- });
- document.getElementById('news').innerHTML=html;
+fetch('news.json')
+.then(res => res.json())
+.then(news => {
+  let html = "";
+  for(let i=0; i<news.length; i++){
+    let n = news[i];
+    html += `<div class="card">
+      <h2>${n.title}</h2>
+      <p>${n.desc}</p>
+      <small>By ${n.author} | ${n.date}</small>
+    </div>`;
+  }
+  document.getElementById('news-container').innerHTML = html;
 });
 </script>
 </body>
