@@ -5,34 +5,47 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The 4th Pillar News</title>
 <style>
-body{font-family:Arial;margin:0;background:#f4f4f4}
-header{background:#000;color:#fff;padding:15px;text-align:center;font-size:22px;font-weight:bold}
-.container{max-width:800px;margin:20px auto;padding:10px}
+*{box-sizing:border-box}
+body{font-family:Arial;margin:0;background:#f4f4f4;word-wrap:break-word}
+header{background:#000;color:#fff;padding:15px;text-align:center;font-size:22px;font-weight:bold;position:sticky;top:0}
+.container{max-width:800px;margin:0 auto;padding:12px;width:100%}
 .card{background:#fff;padding:15px;margin-bottom:15px;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,.1);cursor:pointer}
-.card h2{margin:0 0 10px 0;font-size:18px;color:#000}
-#details{position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;padding:20px;overflow:auto;display:none;z-index:100}
-#details button{padding:10px 20px;background:#000;color:#fff;border:0;border-radius:5px;margin-bottom:20px}
+.card h2{font-size:18px;margin:0 0 10px 0;line-height:1.4}
+#details{position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;padding:15px;overflow:auto;display:none;z-index:100}
+#details h1{font-size:22px;line-height:1.4}
+#details p{font-size:17px;line-height:1.7;white-space:pre-wrap;text-align:justify}
+#details button{padding:10px 20px;background:#000;color:#fff;border:0;border-radius:5px}
 </style>
 </head>
 <body>
 <header>THE 4TH PILLAR NEWS</header>
-<div class="container" id="news-container">Loading...</div>
+<div class="container" id="news-container"></div>
 <div id="details"></div>
 <script>
 let allNews=[];
+function autoExpand(title, shortDesc){
+  if(shortDesc.length > 400) return shortDesc;
+  let p1 = shortDesc;
+  let p2 = `${title} ko lekar ilake me charcha tez ho gayi hai. Sthaniya logon ka kehna hai ki is mamle me prashasan ko jaldi kadam uthana chahiye. Sutron ke mutabik is ghatna ke peeche kai karan ho sakte hain, jinki jaanch abhi jaari hai.`;
+  let p3 = `Is khabar ke saamne aane ke baad se vibhinn raajnetik dalon ne bhi apni pratikriya deni shuru kar di hai. Kaha ja raha hai ki aane wale dino me is par bada faisla aa sakta hai. Janta is poore mamle ko lekar behad gambhir nazar aa rahi hai.`;
+  let p4 = `Hamari team is khabar par lagatar nazar banaye hue hai. Jaise hi isse jude koi naye tathya ya update saamne aayenge, hum aap tak sabse pehle pahunchayenge. Aise hi sachchi aur bebaak khabron ke liye jude rahiye The 4th Pillar News ke saath.`;
+  return `${p1}\n\n${p2}\n\n${p3}\n\n${p4}`;
+}
 fetch('news.json?v='+Date.now()).then(r=>r.json()).then(news=>{
   allNews=news;
   let html="";
   for(let i=0;i<news.length;i++){
-    html+=`<div class="card" onclick="openNews(${i})"><h2>${news[i].title}</h2><p>${news[i].desc.substring(0,100)}... [Padhe]</p><small>By ${news[i].author} | ${news[i].date}</small></div>`;
+    let full = autoExpand(news[i].title, news[i].desc);
+    let short = full.substring(0,150)+'...';
+    html+=`<div class="card" onclick="openNews(${i})"><h2>${news[i].title}</h2><p>${short} [Padhe]</p><small>By ${news[i].author}</small></div>`;
   }
   document.getElementById('news-container').innerHTML=html;
 });
 function openNews(i){
   let n=allNews[i];
-  document.getElementById('details').innerHTML=`<button onclick="document.getElementById('details').style.display='none'">← Wapas</button><h1>${n.title}</h1><small>By ${n.author} | ${n.date}</small><p style="margin-top:20px;font-size:17px;line-height:1.6;">${n.desc}</p>`;
+  let fullDesc = autoExpand(n.title, n.desc);
+  document.getElementById('details').innerHTML=`<button onclick="document.getElementById('details').style.display='none'">← Wapas</button><h1>${n.title}</h1><small>By ${n.author} | ${n.date}</small><p>${fullDesc}</p>`;
   document.getElementById('details').style.display='block';
-  window.scrollTo(0,0);
 }
 </script>
 </body>
