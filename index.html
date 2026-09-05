@@ -2,50 +2,48 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The 4th Pillar News</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>The 4th Pillar News - Gaurav Sharma</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box}
-body{font-family:Arial;margin:0;background:#f4f4f4;word-wrap:break-word}
-header{background:#000;color:#fff;padding:15px;text-align:center;font-size:22px;font-weight:bold;position:sticky;top:0}
-.container{max-width:800px;margin:0 auto;padding:12px;width:100%}
-.card{background:#fff;padding:15px;margin-bottom:15px;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,.1);cursor:pointer}
-.card h2{font-size:18px;margin:0 0 10px 0;line-height:1.4}
-#details{position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;padding:15px;overflow:auto;display:none;z-index:100}
-#details h1{font-size:22px;line-height:1.4}
-#details p{font-size:17px;line-height:1.7;white-space:pre-wrap;text-align:justify}
-#details button{padding:10px 20px;background:#000;color:#fff;border:0;border-radius:5px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans Devanagari',sans-serif;background:#f4f4f4;color:#111}
+header{background:#000;color:#fff;padding:14px;text-align:center;font-size:20px;font-weight:700;position:sticky;top:0;z-index:10}
+.container{max-width:700px;margin:0 auto;padding:10px}
+.cat{display:inline-block;background:#d32f2f;color:#fff;font-size:11px;padding:3px 8px;border-radius:12px;margin-bottom:8px}
+.card{background:#fff;padding:14px;border-radius:12px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.card h2{font-size:17px;line-height:1.5;margin-bottom:6px}
+.card p{font-size:14px;color:#444;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card small{color:#888;font-size:12px}
+#details{position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;overflow-y:auto;display:none;z-index:99}
+#details.inner{max-width:700px;margin:0 auto;padding:16px}
+#details h1{font-size:22px;line-height:1.4;margin:12px 0}
+#details.meta{color:#666;font-size:13px;margin-bottom:12px;border-bottom:1px solid #eee;padding-bottom:10px}
+#details.content p{font-size:17px;line-height:1.9;margin-bottom:14px;text-align:left;color:#222;white-space:pre-wrap}
+#details button{padding:10px 18px;background:#000;color:#fff;border:0;border-radius:8px;margin-bottom:12px}
 </style>
 </head>
 <body>
 <header>THE 4TH PILLAR NEWS</header>
-<div class="container" id="news-container"></div>
-<div id="details"></div>
+<div class="container" id="news-container">Loading...</div>
+<div id="details"><div class="inner" id="details-inner"></div></div>
 <script>
 let allNews=[];
-function autoExpand(title, shortDesc){
-  if(shortDesc.length > 400) return shortDesc;
-  let p1 = shortDesc;
-  let p2 = `${title} ko lekar ilake me charcha tez ho gayi hai. Sthaniya logon ka kehna hai ki is mamle me prashasan ko jaldi kadam uthana chahiye. Sutron ke mutabik is ghatna ke peeche kai karan ho sakte hain, jinki jaanch abhi jaari hai.`;
-  let p3 = `Is khabar ke saamne aane ke baad se vibhinn raajnetik dalon ne bhi apni pratikriya deni shuru kar di hai. Kaha ja raha hai ki aane wale dino me is par bada faisla aa sakta hai. Janta is poore mamle ko lekar behad gambhir nazar aa rahi hai.`;
-  let p4 = `Hamari team is khabar par lagatar nazar banaye hue hai. Jaise hi isse jude koi naye tathya ya update saamne aayenge, hum aap tak sabse pehle pahunchayenge. Aise hi sachchi aur bebaak khabron ke liye jude rahiye The 4th Pillar News ke saath.`;
-  return `${p1}\n\n${p2}\n\n${p3}\n\n${p4}`;
-}
 fetch('news.json?v='+Date.now()).then(r=>r.json()).then(news=>{
   allNews=news;
   let html="";
   for(let i=0;i<news.length;i++){
-    let full = autoExpand(news[i].title, news[i].desc);
-    let short = full.substring(0,150)+'...';
-    html+=`<div class="card" onclick="openNews(${i})"><h2>${news[i].title}</h2><p>${short} [Padhe]</p><small>By ${news[i].author}</small></div>`;
+    let c=news[i].category||"खबर";
+    html+=`<div class="card" onclick="openNews(${i})"><span class="cat">${c}</span><h2>${news[i].title}</h2><p>${news[i].desc}</p><small>By ${news[i].author} | ${news[i].date}</small></div>`;
   }
   document.getElementById('news-container').innerHTML=html;
 });
 function openNews(i){
   let n=allNews[i];
-  let fullDesc = autoExpand(n.title, n.desc);
-  document.getElementById('details').innerHTML=`<button onclick="document.getElementById('details').style.display='none'">← Wapas</button><h1>${n.title}</h1><small>By ${n.author} | ${n.date}</small><p>${fullDesc}</p>`;
+  let paras=n.desc.split('\n\n').map(p=>`<p>${p}</p>`).join('');
+  document.getElementById('details-inner').innerHTML=`<button onclick="document.getElementById('details').style.display='none'">← वापस</button><span class="cat">${n.category||'खबर'}</span><h1>${n.title}</h1><div class="meta">By ${n.author} | ${n.date}</div><div class="content">${paras}</div>`;
   document.getElementById('details').style.display='block';
+  window.scrollTo(0,0);
 }
 </script>
 </body>
