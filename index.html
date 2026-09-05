@@ -21,7 +21,7 @@ header{background:#000; color:#fff; padding:15px; text-align:center; font-size:2
 
 <script>
 let allNews = [];
-fetch('news.json')
+fetch('news.json?v=' + Date.now())
 .then(res => res.json())
 .then(news => {
   allNews = news;
@@ -42,7 +42,7 @@ function openNews(i){
     <button onclick="document.getElementById('details').style.display='none'">← Wapas</button>
     <h1>${n.title}</h1>
     <small>By ${n.author} | ${n.date}</small>
-    <p style="margin-top:20px; font-size:17px; line-height:1.6;">${n.desc}<br><br>Yeh poori khabar hai. Yahan tum detail me apni khabar likh sakte ho. Abhi ke liye ye demo text hai. Tum news.json me desc ko bada kar doge to wahi yahan poora dikhega.</p>
+    <p style="margin-top:20px; font-size:17px; line-height:1.6;">${n.desc}</p>
   `;
   document.getElementById('details').style.display='block';
   window.scrollTo(0,0);
