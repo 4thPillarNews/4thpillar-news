@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>4thPILLAR - Sach Ka Chautha Stambh</title>
+<style>
+body{font-family:Arial;background:#f4f6f9;margin:0}
+header{background:#0a1931;color:#fff;padding:15px;display:flex;gap:12px;align-items:center}
+header img{width:55px;height:55px;border-radius:8px;background:#fff;padding:4px}
+.container{max-width:900px;margin:auto;padding:15px}
+.card{background:#fff;border-radius:12px;margin:15px 0;box-shadow:0 2px 8px #0001;overflow:hidden}
+.card img{width:100%;height:200px;object-fit:cover}
+.card-body{padding:14px}
+.card-body h2{font-size:18px}
+</style>
+</head>
+<body>
+<header><img src="the4thpillarnews.jpg"><div><b>4thPILLAR</b><br><small>Sach Ka Chautha Stambh | 100 Words News</small></div></header>
+<div class="container"><div id="news">Loading...</div></div>
+<script>
+fetch('news.json').then(r=>r.json()).then(d=>{
+let h="";d.forEach(n=>{
+h+=`<div class="card"><img src="${n.image}"><div class="card-body"><h2>${n.title}</h2><p>${n.inshort}</p><br><small>${n.date}</small></div></div>`;
+});document.getElementById('news').innerHTML=h;
+});
+</script>
+</body>
+</html>
