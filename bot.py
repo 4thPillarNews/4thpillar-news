@@ -11,7 +11,11 @@ if os.path.exists('news.json'):
 
 for entry in feed.entries[:10]:
     if not any(n['title']==entry.title for n in news):
-        summary = entry.get('summary','')[:600]
+        summary = entry.get('summary','')
+        # 600 words ke liye 4000 characters tak lega
+        if len(summary) < 500:
+            summary = entry.get('description','') or summary
+        summary = summary[:4000]
         news.insert(0,{
           "title": entry.title,
           "desc": summary,
@@ -22,6 +26,6 @@ for entry in feed.entries[:10]:
           "image": "https://images.pexels.com/photos/518543/pexels-photo-518543.jpeg"
         })
 
-news = news[:20]
+news = news[:30]
 with open('news.json','w',encoding='utf-8') as f:
     json.dump(news,f,ensure_ascii=False,indent=2)
