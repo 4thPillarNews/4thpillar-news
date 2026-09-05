@@ -1,0 +1,11 @@
+<!DOCTYPE html><html lang="hi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>News Details</title>
+<style>body{font-family:Arial;background:#fff;margin:0;padding:0}.box{max-width:800px;margin:auto;padding:15px} img{width:100%;border-radius:12px}.meta{color:#666;font-size:13px;margin:10px 0} h1{font-size:22px} p{font-size:16px;line-height:1.7}</style>
+</head><body><div class="box" id="details">Loading...</div>
+<script>
+const params=new URLSearchParams(window.location.search);
+const id=params.get('id')||0;
+fetch('news.json').then(r=>r.json()).then(d=>{
+ let n=d[id];
+ document.getElementById('details').innerHTML=`<a href="index.html">← Back</a><h1>${n.title}</h1><div class="meta">By ${n.author} | ${n.date}</div><img src="${n.image}"><p>${n.desc || n.description}<br><br>${n.content || ''}</p><p><b>Source: BBC Hindi</b></p>`;
+});
+</script></body></html>
