@@ -1,38 +1,21 @@
 name: Auto News Update
 on:
-  workflow_dispatch:
   schedule:
-    - cron: '0 * * * *'
-  push:
-    branches: [ main ]
-
-permissions:
-  contents: write
-
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
 jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-
-      - name: Install Requirements
-        run: |
-          pip install -r requirements.txt || pip install requests feedparser
-
-      - name: Run Bot
-        run: python bot.py
-
-      - name: Commit News
-        run: |
-          git config user.name "4thPillarNews"
-          git config user.email "4thpillarnews@bot.com"
-          git add news.json
-          # index.html ko add mat karna, warna header udega
-          git diff --staged --quiet || git commit -m "auto update news"
+      - run: pip install feedparser
+      - run: python bot.py
+      - run: |
+          git config user.name "bot"
+          git config user.email "bot@bot.com"
+          git add index.html
+          git commit -m "auto hindi news" || true
           git push
