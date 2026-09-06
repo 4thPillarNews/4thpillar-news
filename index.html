@@ -3,31 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>4th Pillar News - Gaurav Sharma</title>
+<title>4TH PILLAR NEWS</title>
 <style>
-  body{margin:0;font-family:Arial;background:#f5f5f5}
-  .topbar{background:#b80000;color:#fff;padding:6px;text-align:center;font-size:14px}
-  header{background:#111;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:12px 20px}
-  header img{height:50px;background:#fff;padding:4px;border-radius:4px}
-  .newsbox{background:#fff;max-width:800px;margin:20px auto;padding:20px;border-radius:8px}
+body{margin:0;font-family:Arial;background:#f1f1f1}
+.top{background:#cc0000;color:#fff;text-align:center;padding:5px;font-size:12px}
+header{background:#0d1b2a;color:#fff;display:flex;align-items:center;padding:10px 12px;gap:10px}
+.logo{width:46px;height:46px;background:#fff;border-radius:8px;object-fit:contain;border:1px solid #fff}
+.card{background:#fff;margin:10px;padding:14px;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.card a{text-decoration:none;color:#111;font-weight:700;font-size:15px}
+.card span{font-size:11px;color:#888}
 </style>
 </head>
 <body>
-<div class="topbar" id="datebar"></div>
+<div class="top">रविवार, 6 सितंबर 2026 | Ghaziabad, UP</div>
 <header>
-  <div style="display:flex;align-items:center;gap:12px">
-    <img src="logo.png" alt="Logo">
-    <h2 style="margin:0">4TH PILLAR NEWS</h2>
-  </div>
-  <div>Reporter: Gaurav Sharma</div>
+<img class="logo" src="4thpillar24x7.jpg" onerror="this.src='https://raw.githubusercontent.com/4thPillarNews/4thpillar-news/main/4thpillar24x7.jpg'">
+<div><b>4TH PILLAR NEWS</b><div style="font-size:11px;color:#aaa">24x7 Live</div></div>
+<div style="margin-left:auto;font-size:10px">Reporter: Gaurav Sharma</div>
 </header>
-<div class="newsbox">
-  <h1>Breaking: 4th Pillar News Live Ho Gayi</h1>
-  <p>Ghaziabad se Gaurav Sharma ki report - Site ka header aur logo fix ho gaya hai.</p>
-</div>
-<script>
-  const d=new Date().toLocaleDateString('hi-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-  document.getElementById('datebar').innerText=d + " | Ghaziabad, UP";
-</script>
+
+<div class="card"><a href="#">Breaking: 4th Pillar News Live Ho Gayi - Ghaziabad Se Badi Khabar</a><span>Just Now</span></div>
+<div class="card"><a href="#">UP Me Mausam Alert - 72 Ghante Bhari Barish</a><span>Weather</span></div>
+<div class="card"><a href="#">Ghaziabad Nagar Nigam Ka Naya Project Shuru</a><span>Local</span></div>
+<div class="card"><a href="#">Noida Metro Vistar Ko Mili Manzuri</a><span>Noida</span></div>
+<div class="card"><a href="#">Desh-Duniya Ki Taza Khabrein Yaha Padhein</a><span>National</span></div>
+
 </body>
 </html>
