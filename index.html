@@ -7,90 +7,66 @@
 <style>
 body{margin:0;font-family:Arial;background:#f2f2f2}
 .top{background:#c00;color:#fff;text-align:center;padding:6px;font-size:11px}
-header{background:#0f172a;color:#fff;padding:12px;display:flex;gap:10px;align-items:center;position:sticky;top:0;z-index:10}
+header{background:#0f172a;color:#fff;padding:12px;display:flex;gap:10px;align-items:center}
 .logo{width:45px;height:45px;background:#fff;border-radius:8px;object-fit:contain}
-.card{background:#fff;margin:10px;border-radius:12px;overflow:hidden;cursor:pointer;box-shadow:0 2px 5px rgba(0,0,0,.08)}
+.tabs{display:flex;gap:6px;padding:8px;background:#fff;overflow:auto;position:sticky;top:0;z-index:5}
+.tabs button{border:none;background:#e2e8f0;padding:6px 14px;border-radius:20px;font-weight:bold}
+.tabs button.active{background:#0f172a;color:#fff}
+.card{background:#fff;margin:10px;border-radius:12px;overflow:hidden;cursor:pointer}
 .card img{width:100%;height:180px;object-fit:cover}
-.info{padding:12px}
-.info b{font-size:17px;color:#111;line-height:1.3;display:block}
-.info span{font-size:12px;color:#888}
+.info{padding:12px}.info b{font-size:16px;display:block;line-height:1.3}.info span{font-size:11px;color:#666}
 #detail{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#fff;z-index:999;overflow:auto}
-#detail img{width:100%;height:230px;object-fit:cover}
-.pad{padding:16px}
-.pad p{line-height:1.8;font-size:16px;margin:0 0 14px 0;text-align:justify}
+#detail img{width:100%;height:230px;object-fit:cover}.pad{padding:16px}.pad p{line-height:1.8;font-size:16px;margin-bottom:14px;text-align:justify}
 .by{color:#c00;font-weight:bold;font-size:12px;margin:8px 0}
 </style>
 </head>
 <body>
-<div class="top">रविवार, 6 सितंबर 2026 | गाजियाबाद</div>
+<div class="top">रविवार, 6 सितंबर 2026 | Ghaziabad</div>
 <header><img class="logo" src="4thpillar24x7.jpg"><div><b>4TH PILLAR NEWS</b><div style="font-size:11px;color:#94a3b8">Reporter: Gaurav Sharma</div></div></header>
 
-<div id="list">
-<div class="card" onclick="openNews('gh1')">
-<img src="https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?w=600">
-<div class="info"><b>गाजियाबाद में भारी बारिश से जनजीवन अस्त-व्यस्त, प्रशासन अलर्ट पर</b><span>Reporter: Gaurav Sharma | 2 घंटे पहले</span></div>
+<div class="tabs">
+<button class="active" onclick="filterCat('all',this)">All</button>
+<button onclick="filterCat('ghaziabad',this)">Ghaziabad</button>
+<button onclick="filterCat('national',this)">National</button>
+<button onclick="filterCat('sports',this)">Sports</button>
 </div>
 
-<div class="card" onclick="openNews('up1')">
-<img src="https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=600">
-<div class="info"><b>योगी सरकार का बड़ा ऐलान, किसानों को मिलेंगे 6000 रुपये</b><span>Reporter: Gaurav Sharma | 4 घंटे पहले</span></div>
-</div>
+<div id="list">
+<div class="card" data-cat="ghaziabad" onclick="openNews('n1')"><img src="https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?w=600"><div class="info"><b>गाजियाबाद में भारी बारिश से जलभराव, स्कूलों में छुट्टी</b><span>Ghaziabad | Gaurav Sharma</span></div></div>
+<div class="card" data-cat="ghaziabad" onclick="openNews('n2')"><img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600"><div class="info"><b>इंदिरापुरम में सड़क हादसा, ट्रैफिक जाम से लोग परेशान</b><span>Ghaziabad | Gaurav Sharma</span></div></div>
+<div class="card" data-cat="ghaziabad" onclick="openNews('n3')"><img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600"><div class="info"><b>गाजियाबाद नगर निगम का बड़ा एक्शन, अवैध निर्माण तोड़े</b><span>Ghaziabad | Gaurav Sharma</span></div></div>
+<div class="card" data-cat="national" onclick="openNews('n4')"><img src="https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=600"><div class="info"><b>योगी सरकार का किसानों के लिए 6000 रुपये का ऐलान</b><span>National | Gaurav Sharma</span></div></div>
+<div class="card" data-cat="national" onclick="openNews('n5')"><img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=600"><div class="info"><b>दिल्ली-मेरठ एक्सप्रेसवे पर नया टोल नियम लागू</b><span>National | Gaurav Sharma</span></div></div>
+<div class="card" data-cat="sports" onclick="openNews('n6')"><img src="https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=600"><div class="info"><b>विराट कोहली ने तोड़ा सचिन का रिकॉर्ड, फैंस में जश्न</b><span>Sports | Gaurav Sharma</span></div></div>
 </div>
 
 <div id="detail">
-<div style="padding:10px;background:#0f172a"><button onclick="closeNews()" style="background:#fff;border:none;padding:7px 14px;border-radius:6px;font-weight:bold">← वापस</button></div>
+<div style="padding:10px;background:#0f172a"><button onclick="document.getElementById('detail').style.display='none'" style="background:#fff;border:none;padding:7px 14px;border-radius:6px;font-weight:bold">← वापस</button></div>
 <img id="dImg" src="">
-<div class="pad">
-<h2 id="dTitle" style="margin:0 0 5px 0"></h2>
-<div class="by">By Gaurav Sharma | 4th Pillar News, Ghaziabad | 6 सितंबर 2026</div>
-<div id="dBody"></div>
-</div>
+<div class="pad"><h2 id="dTitle" style="margin:0"></h2><div class="by">By Gaurav Sharma | 4th Pillar News, Ghaziabad | 6 Sep 2026</div><div id="dBody"></div></div>
 </div>
 
 <script>
-const newsData={
-gh1:{
-img:"https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?w=600",
-title:"गाजियाबाद में भारी बारिश से जनजीवन अस्त-व्यस्त, प्रशासन अलर्ट पर",
-paras:[
-"गाजियाबाद। गाजियाबाद में शनिवार रात से हो रही लगातार बारिश ने पूरे शहर का जनजीवन अस्त-व्यस्त कर दिया है। रविवार सुबह तक इंदिरापुरम, वैशाली, वसुंधरा और मोहन नगर के कई इलाकों में घुटनों तक पानी भर गया।",
-"मौके पर पहुंची हमारी टीम ने देखा कि सड़कों पर गाड़ियां बंद पड़ी हैं और लोगों को आने-जाने में भारी परेशानी हो रही है। नगर निगम के अधिकारियों के मुताबिक पिछले 12 घंटों में 120 मिमी बारिश दर्ज की गई है, जो इस सीजन की सबसे ज्यादा है।",
-"मौसम विभाग ने अगले 48 घंटों के लिए ऑरेंज अलर्ट जारी किया है। विभाग का कहना है कि बंगाल की खाड़ी में बना कम दबाव का क्षेत्र अब यूपी की तरफ बढ़ रहा है, जिसके चलते बारिश और तेज हो सकती है।",
-"जिलाधिकारी ने एहतियात के तौर पर सभी सरकारी और प्राइवेट स्कूलों में आज छुट्टी घोषित कर दी है। साथ ही लोगों से अपील की है कि जरूरी होने पर ही घर से बाहर निकलें।",
-"नगर निगम कमिश्नर ने बताया कि पानी निकालने के लिए 20 पंपिंग सेट लगाए गए हैं। हमारी टीम लगातार फील्ड में है। उन्होंने बताया कि शाम तक स्थिति सामान्य होने की उम्मीद है।",
-"वहीं स्थानीय लोगों का कहना है कि हर साल बारिश में यही हाल होता है। नालों की सफाई समय पर नहीं होती। प्रशासन को इस पर स्थायी समाधान निकालना चाहिए।",
-"फिलहाल प्रशासन अलर्ट मोड पर है और एनडीआरएफ की एक टीम को भी स्टैंडबाय पर रखा गया है। 4th Pillar News की टीम पल-पल की अपडेट आप तक पहुंचा रही है।"
-]
-},
-up1:{
-img:"https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=600",
-title:"योगी सरकार का बड़ा ऐलान, किसानों को मिलेंगे 6000 रुपये",
-paras:[
-"लखनऊ। उत्तर प्रदेश के मुख्यमंत्री योगी आदित्यनाथ ने किसानों के लिए एक बड़ी सौगात का ऐलान किया है। शनिवार को कैबिनेट बैठक के बाद उन्होंने कहा कि प्रदेश के सभी छोटे किसानों को सालाना 6000 रुपये की अतिरिक्त सहायता दी जाएगी।",
-"इस योजना का नाम 'मुख्यमंत्री कृषक समृद्धि योजना' रखा गया है। इसका लाभ उन किसानों को मिलेगा जिनके पास 2 हेक्टेयर से कम जमीन है। पैसा सीधे उनके बैंक खाते में हर 4 महीने में 2000-2000 रुपये की किस्त में आएगा।",
-"मुख्यमंत्री ने कहा कि हमारी सरकार किसानों की आय दोगुनी करने के लिए लगातार काम कर रही है। पिछली सरकारों ने किसानों को सिर्फ वादे दिए, हमने जमीन पर काम करके दिखाया है।",
-"कृषि मंत्री ने बताया कि इस योजना से प्रदेश के करीब 2 करोड़ 35 लाख किसानों को फायदा होगा। इसके लिए बजट में 14 हजार करोड़ रुपये का प्रावधान किया गया है। आवेदन प्रक्रिया अगले हफ्ते से शुरू होगी।",
-"किसान संगठनों ने इस फैसले का स्वागत किया है। भारतीय किसान यूनियन के नेता राकेश टिकैत ने कहा कि ये एक अच्छा कदम है, लेकिन फसल का सही दाम मिलना ज्यादा जरूरी है।",
-"विपक्ष ने इस पर सवाल उठाए हैं। समाजवादी पार्टी ने कहा कि चुनाव नजदीक आते ही सरकार को किसानों की याद आती है। ये सिर्फ चुनावी लॉलीपॉप है।",
-"फिलहाल इस ऐलान के बाद किसानों में खुशी का माहौल है। 4th Pillar News से बात करते हुए कई किसानों ने कहा कि इससे उन्हें खाद-बीज खरीदने में मदद मिलेगी।"
-]
-}
+const data={
+n1:{img:"https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?w=600",title:"गाजियाबाद में भारी बारिश से जलभराव, स्कूलों में छुट्टी",p:["गाजियाबाद में शनिवार रात से हो रही लगातार बारिश ने शहर का जनजीवन अस्त-व्यस्त कर दिया। इंदिरापुरम, वैशाली, वसुंधरा में घुटनों तक पानी भर गया।","नगर निगम के अनुसार 12 घंटों में 120 मिमी बारिश दर्ज हुई, जो इस सीजन की सबसे ज्यादा है। पंपिंग सेट लगातार पानी निकाल रहे हैं।","मौसम विभाग ने अगले 48 घंटों के लिए ऑरेंज अलर्ट जारी किया है। बंगाल की खाड़ी में बने सिस्टम से बारिश और बढ़ सकती है।","जिलाधिकारी ने सभी स्कूलों में छुट्टी घोषित की है और लोगों से घर में रहने की अपील की है।","स्थानीय लोगों का कहना है कि हर साल यही हाल होता है, नालों की सफाई नहीं होती।","प्रशासन ने NDRF को स्टैंडबाय पर रखा है।","4th Pillar News की टीम मौके पर मौजूद है और पल-पल की अपडेट दे रही है।"]},
+n2:{img:"https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600",title:"इंदिरापुरम में सड़क हादसा, ट्रैफिक जाम से लोग परेशान",p:["गाजियाबाद के इंदिरापुरम में आज सुबह एक तेज रफ्तार ट्रक ने दो कारों को टक्कर मार दी। हादसे में 2 लोग घायल हुए हैं।","हादसा सुबह 8 बजे के करीब CISF रोड पर हुआ। ट्रक का ब्रेक फेल होने से ये हादसा हुआ बताया जा रहा है।","हादसे के बाद करीब 2 घंटे तक जाम लगा रहा। ऑफिस जाने वाले लोगों को भारी परेशानी हुई।","ट्रैफिक पुलिस मौके पर पहुंची और क्रेन की मदद से गाड़ियों को हटाया। घायलों को पास के अस्पताल में भर्ती कराया गया।","पुलिस ने ट्रक चालक को हिरासत में ले लिया है और जांच शुरू कर दी है।","स्थानीय लोगों ने मांग की है कि इस रोड पर स्पीड ब्रेकर लगाए जाएं।","फिलहाल ट्रैफिक सामान्य हो गया है।"]},
+n3:{img:"https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600",title:"गाजियाबाद नगर निगम का बड़ा एक्शन, अवैध निर्माण तोड़े",p:["गाजियाबाद नगर निगम ने आज अवैध निर्माण के खिलाफ बड़ी कार्रवाई की। वैशाली सेक्टर-4 में 5 अवैध दुकानों को तोड़ा गया।","निगम अधिकारियों के अनुसार ये निर्माण बिना नक्शा पास कराए किए गए थे। कई बार नोटिस देने के बाद भी निर्माण नहीं हटाया गया।","सुबह 11 बजे जेसीबी के साथ टीम मौके पर पहुंची। कार्रवाई के दौरान हल्का विरोध भी हुआ, लेकिन पुलिस ने स्थिति संभाल ली।","नगर आयुक्त ने कहा कि शहर में अवैध निर्माण बर्दाश्त नहीं किया जाएगा। अभियान लगातार जारी रहेगा।","उन्होंने बताया कि अगले हफ्ते इंदिरापुरम और कौशांबी में भी ऐसी कार्रवाई होगी।","स्थानीय लोगों ने इस कार्रवाई का स्वागत किया है।","निगम ने लोगों से अपील की है कि निर्माण से पहले नक्शा जरूर पास कराएं।"]},
+n4:{img:"https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=600",title:"योगी सरकार का किसानों के लिए 6000 रुपये का ऐलान",p:["लखनऊ में मुख्यमंत्री योगी आदित्यनाथ ने किसानों के लिए नई योजना का ऐलान किया। हर छोटे किसान को सालाना 6000 रुपये मिलेंगे।","योजना का नाम मुख्यमंत्री कृषक समृद्धि योजना है। पैसा सीधे खाते में 2000-2000 की तीन किस्तों में आएगा।","सीएम ने कहा कि हम किसानों की आय दोगुनी करने के लिए काम कर रहे हैं। पिछली सरकारों ने सिर्फ वादे किए।","इस योजना से 2.35 करोड़ किसानों को फायदा होगा। बजट में 14 हजार करोड़ का प्रावधान है।","किसान संगठनों ने स्वागत किया है, लेकिन फसल के सही दाम की मांग भी की है।","विपक्ष ने इसे चुनावी लॉलीपॉप बताया है।","फिलहाल किसानों में खुशी है। आवेदन अगले हफ्ते से शुरू होंगे।"]},
+n5:{img:"https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=600",title:"दिल्ली-मेरठ एक्सप्रेसवे पर नया टोल नियम लागू",p:["दिल्ली-मेरठ एक्सप्रेसवे पर आज से नया टोल नियम लागू हो गया है। अब फास्टैग नहीं होने पर दोगुना टोल देना होगा।","NHAI के अनुसार ये नियम जाम कम करने के लिए लाया गया है। फास्टैग से टोल पर रुकना नहीं पड़ता।","नए नियम के तहत अगर गाड़ी में फास्टैग नहीं है तो 155 की जगह 310 रुपये देने होंगे।","टोल कर्मचारियों को सख्त निर्देश दिए गए हैं कि कैश लेन में भी फास्टैग चेक करें।","लोगों ने इस नियम का स्वागत किया है, लेकिन कुछ लोगों ने कहा कि पहले फास्टैग की व्यवस्था ठीक की जाए।","NHAI ने कहा कि अगले 15 दिन तक जागरूकता अभियान चलाया जाएगा।","एक्सप्रेसवे पर रोजाना 1 लाख से ज्यादा गाड़ियां गुजरती हैं।"]},
+n6:{img:"https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=600",title:"विराट कोहली ने तोड़ा सचिन का रिकॉर्ड, फैंस में जश्न",p:["विराट कोहली ने आज इतिहास रच दिया। उन्होंने सबसे तेज 13000 रन पूरे किए। सचिन का 18 साल पुराना रिकॉर्ड टूट गया।","ये रिकॉर्ड उन्होंने इंदौर में न्यूजीलैंड के खिलाफ मैच में बनाया। 13000 रन सिर्फ 267 पारियों में पूरे किए।","स्टेडियम में विराट-विराट के नारे लगे। सचिन ने ट्वीट करके विराट को बधाई दी।","विराट ने कहा कि ये मेरे लिए गर्व का पल है। सचिन पाजी मेरे आदर्श हैं, उनका रिकॉर्ड तोड़ना बड़ी बात है।","टीम इंडिया ने ये मैच 6 विकेट से जीत लिया। विराट ने 122 रन की नाबाद पारी खेली।","सोशल मीडिया पर फैंस जश्न मना रहे हैं।","आने वाले वर्ल्ड कप से पहले ये फॉर्म टीम के लिए अच्छी खबर है।"]}
 };
+function filterCat(cat,btn){
+ document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+ document.querySelectorAll('.card').forEach(c=>{c.style.display=(cat=='all'||c.dataset.cat==cat)?'block':'none'})
+}
 function openNews(id){
- let n=newsData[id];
+ let n=data[id];
  document.getElementById('dImg').src=n.img;
  document.getElementById('dTitle').innerText=n.title;
- let body=document.getElementById('dBody');
- body.innerHTML="";
- n.paras.forEach(p=>{
-   let el=document.createElement('p');
-   el.innerText=p;
-   body.appendChild(el);
- });
- document.getElementById('detail').style.display='block';
- window.scrollTo(0,0);
+ let body=document.getElementById('dBody');body.innerHTML="";
+ n.p.forEach(t=>{let p=document.createElement('p');p.innerText=t;body.appendChild(p)});
+ document.getElementById('detail').style.display='block';window.scrollTo(0,0);
 }
-function closeNews(){document.getElementById('detail').style.display='none'}
 </script>
 </body>
 </html>
