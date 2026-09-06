@@ -1,9 +1,30 @@
-<!DOCTYPE html><html lang="hi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>News</title>
-<style>body{font-family:Arial;margin:0;background:#fff}header{background:#000;color:#fff;padding:12px}a{color:#fff;text-decoration:none}.box{max-width:800px;margin:auto;padding:20px}img{width:100%;border-radius:8px}</style></head>
-<body><header><a href="./">← Back to 4th Pillar News</a></header><div class="box" id="detail"></div>
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=5.0">
+<title>4th Pillar News</title>
+<style>
+body{margin:0;font-family:Noto Sans, Arial;background:#fff;color:#222}
+header{background:#000;color:#fff;padding:12px 15px;position:sticky;top:0}
+header a{color:#fff;text-decoration:none}
+.box{max-width:800px;margin:auto;padding:15px}
+.box img{width:100%;border-radius:10px;margin:10px 0}
+.box p{line-height:1.8;font-size:17px;text-align:justify;margin-bottom:14px}
+.badge{background:#b80000;color:#fff;padding:5px 10px;border-radius:4px;display:inline-block;margin:8px 0}
+@media(max-width:600px){.box p{font-size:16px}}
+</style>
+</head>
+<body>
+<header><a href="./">← 4th Pillar News</a></header>
+<div class="box" id="d">Loading...</div>
 <script>
-fetch('news.json').then(r=>r.json()).then(data=>{
-const id=new URLSearchParams(location.search).get('id');const n=data[id];
-document.getElementById('detail').innerHTML=`<img src="${n.image}"><h1>${n.title}</h1><p><b>${n.date} | Reporter: ${n.reporter} | ${n.location}</b></p><p>${n.content}</p>`;
+fetch('news.json').then(r=>r.json()).then(all=>{
+let id=new URLSearchParams(location.search).get('id')||0;
+let n=all[id];
+let html=`<h1>${n.title}</h1><span class="badge">${n.date} | Reporter: ${n.reporter}</span><img src="${n.image}"><p><b>${n.location} -</b> ${n.para1}</p><p>${n.para2}</p><p>${n.para3}</p><p>${n.para4}</p><p>${n.para5}</p><p>${n.para6}</p><p><b>${n.para7}</b></p><hr><p><b>Reporter: Gaurav Sharma | 4th Pillar News, Ghaziabad</b></p>`;
+document.getElementById('d').innerHTML=html;
 });
-</script></body></html>
+</script>
+</body>
+</html>
