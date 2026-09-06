@@ -1,33 +1,21 @@
 name: Auto News Update
-
 on:
   schedule:
     - cron: '0 * * * *'
   workflow_dispatch:
-
 permissions:
   contents: write
-
 jobs:
   update-news:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.9'
-
-      - name: Install
-        run: pip install feedparser
-
-      - name: Run Bot
-        run: python bot.py
-
-      - name: Push News
-        run: |
+      - run: pip install feedparser
+      - run: python bot.py
+      - run: |
           git config --global user.name "Gaurav Sharma"
           git config --global user.email "gaurav@4thpillarnews.com"
           git add news.json
