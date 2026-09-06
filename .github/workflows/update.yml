@@ -1,23 +1,22 @@
 name: Auto News Update
 on:
-  schedule:
-    - cron: '30 1 * * *'
-    - cron: '30 14 * * *'
   workflow_dispatch:
+  schedule:
+    - cron: '0 * * * *'
 
 jobs:
-  update-news:
+  update:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      - run: pip install feedparser
+      - run: pip install -r requirements.txt
       - run: python bot.py
       - run: |
-          git config --global user.name "4thPillar Bot"
-          git config --global user.email "bot@4thpillar.com"
+          git config --global user.name "4thPillarNews"
+          git config --global user.email "4thpillanews@bot.com"
           git add news.json
-          git commit -m "auto update news" || echo "no changes"
+          git commit -m "auto update news" || exit 0
           git push
