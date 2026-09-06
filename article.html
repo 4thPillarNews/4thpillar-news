@@ -1,2 +1,20 @@
 <!DOCTYPE html>
-<html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>News</title><style>body{font-family:system-ui;max-width:800px;margin:auto;padding:15px}img{width:100%;height:350px;object-fit:cover;border-radius:12px}h1{font-size:22px}.btn{background:#d32f2f;color:white;padding:14px 20px;text-decoration:none;border-radius:8px;display:inline-block;margin-top:15px}</style></head><body><a href="./">← Back</a><div id="news"></div><script>fetch('news.json').then(r=>r.json()).then(data=>{const id=new URLSearchParams(location.search).get('id')||0;const n=data[id];document.getElementById('news').innerHTML=`<br><img src="${n.image}"><h1>${n.title}</h1><p>${n.date}</p><p style="font-size:18px;line-height:1.8">${n.description}</p><a class="btn" href="${n.link}" target="_blank">Original Website par padhein</a>`})</script></body></html>
+<html><head><meta charset="utf-8"><title>News Detail</title>
+<style>body{font-family:Arial;padding:15px;max-width:700px;margin:auto} img{width:100%;border-radius:8px}</style>
+</head><body>
+<a href="index.html">← Back</a>
+<div id="detail"></div>
+<script>
+const id = new URLSearchParams(window.location.search).get('id') || 0;
+fetch('news.json').then(r=>r.json()).then(data=>{
+ let n = data[id];
+ if(!n){ document.getElementById('detail').innerHTML='News not found'; return; }
+ let paras = (n.description || '').split('\n').map(p=>`<p>${p}</p>`).join('');
+ document.getElementById('detail').innerHTML = `
+  <h1>${n.title}</h1>
+  <p><b>By ${n.author || 'Gaurav Sharma'} | ${n.date || ''}</b></p>
+  <img src="${n.image}">
+  <div>${paras}</div>
+ `;
+});
+</script></body></html>
