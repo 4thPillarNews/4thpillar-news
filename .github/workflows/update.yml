@@ -5,19 +5,30 @@ on:
     - cron: '0 * * * *'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   update-news:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.9'
-      - run: pip install feedparser
-      - run: python bot.py
-      - run: |
-          git config user.name "Gaurav Sharma"
-          git config user.email "gaurav@4thpillarnews.com"
+
+      - name: Install
+        run: pip install feedparser
+
+      - name: Run Bot
+        run: python bot.py
+
+      - name: Push News
+        run: |
+          git config --global user.name "Gaurav Sharma"
+          git config --global user.email "gaurav@4thpillarnews.com"
           git add news.json
-          git commit -m "hourly update" || echo "No changes"
-          git push
+          git diff --cached --quiet && echo "No change" || (git commit -m "news update" && git push)
