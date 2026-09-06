@@ -1,33 +1,29 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-<title>द फोर्थ पिलर न्यूज़</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4th Pillar News</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Noto Sans Devanagari',system-ui; background:#fff; -webkit-text-size-adjust:100%; word-wrap:break-word; overflow-wrap:anywhere}
-.top{background:#0a1f44; color:#fff; padding:12px 14px; display:flex; align-items:center; gap:10px; position:sticky; top:0; z-index:99}
-.top img{width:44px;height:44px;border-radius:8px;background:#fff;object-fit:contain}
-.card{margin:12px 12px; border:1px solid #eee; border-radius:14px; overflow:hidden}
-.card img{width:100%; height:auto; max-height:220px; object-fit:cover; display:block}
-.card-body{padding:12px}
-.card-body h2{font-size:17px; line-height:1.4; color:#111; font-weight:700}
-.card-body p{font-size:14px; line-height:1.6; color:#333; margin-top:6px}
-.meta{font-size:11px; color:#777; margin-top:8px}
+body{font-family:system-ui;max-width:900px;margin:auto;padding:10px;background:#f2f2f2}
+.card{background:#fff;border-radius:12px;overflow:hidden;margin:14px 0;box-shadow:0 2px 10px #0001}
+.card img{width:100%;height:210px;object-fit:cover}
+.c{padding:14px}
+h3{margin:5px 0;font-size:18px}
+.btn{background:#d32f2f;color:#fff;padding:9px 14px;border-radius:6px;text-decoration:none;display:inline-block;margin-top:8px;margin-right:6px}
+.btn2{background:#222}
 </style>
 </head>
 <body>
-<div class="top"><img src="the4thpillarnews.jpg"><div><b>द फोर्थ पिलर न्यूज़</b><br><small style="color:#ffda6b">• सच का चौथा स्तंभ</small></div></div>
-<h1 style="padding:14px;font-size:20px">आज की मुख्य खबरें</h1>
-<div id="list"></div>
+<h2 style="text-align:center">4th Pillar - ताज़ा खबर</h2>
+<div id="list">Loading...</div>
 <script>
-fetch('./news.json?v='+Date.now()).then(r=>r.json()).then(data=>{
- let h='';
- data.forEach((n,i)=>{
-  h+=`<div class="card" onclick="location.href='news.html?id=${i}'"><img src="${n.image}"><div class="card-body"><h2>${n.title}</h2><p>${(n.desc||'').slice(0,180)}...</p><div class="meta">${n.date}</div></div></div>`;
- });
- document.getElementById('list').innerHTML=h;
+fetch('news.json?v='+Date.now()).then(r=>r.json()).then(data=>{
+let h='';
+data.forEach((n,i)=>{
+h+=`<div class="card"><img src="${n.image}"><div class="c"><h3>${n.title}</h3><small>${n.date}</small><p>${n.description.slice(0,100)}...</p><a class="btn" href="article.html?id=${i}">पढ़ें</a><a class="btn btn2" href="${n.link}" target="_blank">Original</a></div></div>`;
+});
+document.getElementById('list').innerHTML=h;
 });
 </script>
 </body>
