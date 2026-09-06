@@ -1,15 +1,51 @@
-<div style="text-align:center;padding:10px;background:#fff">
-<button onclick="filterNews('All')">All</button>
-<button onclick="filterNews('National')">National</button>
-<button onclick="filterNews('International')">International</button>
-<button onclick="filterNews('Sports')">Sports</button>
-<button onclick="filterNews('Ghaziabad')">Ghaziabad</button>
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>4TH PILLAR NEWS</title>
+<style>
+body{margin:0;font-family:Arial;background:#f2f2f2}
+.top{background:#c00;color:#fff;text-align:center;padding:6px;font-size:12px}
+header{background:#0f172a;color:#fff;padding:12px;display:flex;gap:10px;align-items:center}
+.logo{width:45px;height:45px;background:#fff;border-radius:8px;object-fit:contain}
+.tabs{display:flex;gap:6px;padding:8px;background:#fff;overflow:auto}
+.tabs button{border:none;background:#e2e8f0;padding:6px 12px;border-radius:20px;font-weight:bold}
+.tabs button.active{background:#0f172a;color:#fff}
+.card{background:#fff;margin:10px;padding:14px;border-radius:10px}
+.card a{font-weight:800;color:#111;text-decoration:none;font-size:16px}
+.card p{margin:4px 0 0;color:#666;font-size:12px}
+</style>
+</head>
+<body>
+<div class="top">6 सितंबर 2026 | Ghaziabad | Reporter: Gaurav Sharma</div>
+<header><img class="logo" src="4thpillar24x7.jpg"><div><b>4TH PILLAR NEWS</b><div style="font-size:11px;color:#94a3b8">24x7 हिंदी</div></div></header>
+
+<div class="tabs">
+<button class="active" onclick="filterNews('all',this)">All</button>
+<button onclick="filterNews('national',this)">National</button>
+<button onclick="filterNews('international',this)">International</button>
+<button onclick="filterNews('sports',this)">Sports</button>
+<button onclick="filterNews('ghaziabad',this)">Ghaziabad</button>
 </div>
+
+<div id="news">
+<div class="card" data-cat="ghaziabad"><a href="https://www.amarujala.com/uttar-pradesh/ghaziabad" target="_blank">गाजियाबाद में आज सुबह से झमाझम बारिश, जलभराव से लोग परेशान</a><p>Ghaziabad | आज की खबर</p></div>
+<div class="card" data-cat="national"><a href="https://www.abplive.com" target="_blank">दिल्ली-यूपी बॉर्डर पर बड़ा हादसा, कई गाड़ियों की टक्कर</a><p>National | ब्रेकिंग</p></div>
+<div class="card" data-cat="national"><a href="https://www.abplive.com" target="_blank">योगी सरकार का बड़ा फैसला, किसानों के लिए नई योजना</a><p>National | UP News</p></div>
+<div class="card" data-cat="international"><a href="https://www.bbc.com/hindi" target="_blank">अमेरिका में तूफान का अलर्ट, भारतीयों के लिए एडवाइजरी</a><p>International | दुनिया</p></div>
+<div class="card" data-cat="sports"><a href="https://www.abplive.com/sports" target="_blank">विराट कोहली ने बनाया नया रिकॉर्ड, फैंस में जश्न</a><p>Sports | क्रिकेट</p></div>
+<div class="card" data-cat="ghaziabad"><a href="https://www.amarujala.com" target="_blank">गाजियाबाद नगर निगम का नया प्लान, अब हर गली चमकेगी</a><p>Ghaziabad | स्थानीय</p></div>
+</div>
+
 <script>
-function filterNews(cat){
-fetch('news.json').then(r=>r.json()).then(data=>{
-let f = cat=='All' ? data : data.filter(n=>n.category==cat);
-// wahi card wala code yahan use kar
-})
+function filterNews(cat,btn){
+ document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
+ btn.classList.add('active');
+ document.querySelectorAll('.card').forEach(c=>{
+   c.style.display = (cat=='all' || c.dataset.cat==cat) ? 'block' : 'none';
+ });
 }
 </script>
+</body>
+</html>
