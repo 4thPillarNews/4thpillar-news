@@ -1,15 +1,32 @@
 <!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>4th Pillar News</title>
-<style>body{font-family:Arial} .card{border:1px solid #ddd;margin:10px;padding:10px;border-radius:8px} img{width:100%;height:180px;object-fit:cover} a{text-decoration:none;color:#000}</style>
-</head><body>
-<h1>चौथा स्तंभ न्यूज़</h1>
-<div id="news"></div>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4th Pillar News</title>
+<style>
+body{margin:0;font-family:Arial;background:#f2f2f2}
+header{background:#b30000;color:#fff;padding:14px;text-align:center;font-size:22px;font-weight:bold}
+#news{padding:10px}
+.card{background:#fff;margin-bottom:12px;border-radius:10px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+.card img{width:100%;height:200px;object-fit:cover}
+.info{padding:10px}
+.info h3{margin:0;font-size:18px;line-height:1.3}
+.info p{color:#666;font-size:13px;margin-top:5px}
+a{color:#000;text-decoration:none}
+</style>
+</head>
+<body>
+<header>चौथा स्तंभ न्यूज़</header>
+<div id="news">Loading news...</div>
 <script>
-fetch('news.json').then(r=>r.json()).then(data=>{
- let h='';
- data.forEach((n,i)=>{
-  h+=`<div class="card"><a href="article.html?id=${i}"><img src="${n.image}"><h3>${n.title}</h3><p>By ${n.author} | ${n.date}</p></a></div>`;
- });
- document.getElementById('news').innerHTML=h;
+fetch('news.json?v='+Date.now()).then(r=>r.json()).then(data=>{
+let h='';
+data.forEach((n,i)=>{
+h+=`<div class="card"><a href="article.html?id=${i}"><img src="${n.image}"><div class="info"><h3>${n.title}</h3><p>By ${n.author} | ${n.date}</p></div></a></div>`;
 });
-</script></body></html>
+document.getElementById('news').innerHTML=h;
+});
+</script>
+</body>
+</html>
