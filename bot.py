@@ -1,26 +1,63 @@
 import feedparser
 import json
-import datetime
-import os
+from datetime import datetime
 
-RSS = "https://news.google.com/rss?hl=hi&gl=IN&ceid=IN:hi"
+# RSS Feed
+feed_url = "https://news.google.com/rss?hl=hi&gl=IN&ceid=IN:hi"
+feed = feedparser.parse(feed_url)
 
-print("Fetching news...")
-feed = feedparser.parse(RSS)
-
-news = []
-for i, e in enumerate(feed.entries[:20]):
-    news.append({
-        "id": i,
-        "title": e.title,
-        "link": e.link,
-        "description": getattr(e, 'summary', e.title)[:150],
-        "date": datetime.datetime.now().strftime("%d %b %Y, %I:%M %p"),
-        "image": f"https://picsum.photos/seed/{i+10}/800/450"
+news_list = []
+for entry in feed.entries[:20]:
+    news_list.append({
+        "title": entry.title,
+        "link": entry.link,
+        "date": datetime.now().strftime("%d %b %Y, %I:%M %p")
     })
 
-# news.json me save karna - ye line tere code me missing thi
-with open('news.json', 'w', encoding='utf-8') as f:
-    json.dump(news, f, ensure_ascii=False, indent=2)
+# news.json save karo
+with open("news.json", "w", encoding="utf-8") as f:
+    json.dump(news_list, f, ensure_ascii=False, indent=2)
 
-print(f"Success! {len(news)} news saved to news.json")
+# index.html banao - LOGO FIX YAHI HAI
+html_template = f"""
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Fourth Pillar News</title>
+<style>
+body{{font-family: Arial; margin:0; background:#f5f5f5;}}
+header{{background:#111; color:white; padding:12px 20px; display:flex; align-items:center;}}
+header img{{height:48px; width:48px; border-radius:50%; margin-right:12px; border:2px solid white;}}
+.card{{background:white; margin:15px; padding:15px; border-radius:10px; box-shadow:0 2px 5px rgba(0,0,0,0.1);}}
+.card a{{text-decoration:none; color:#111; font-weight:bold; font-size:18px;}}
+</style>
+</head>
+<body>
+<header>
+<img src="the4thpillarnews.jpg" alt="The Fourth Pillar Logo">
+<h2 style="margin:0;">The Fourth Pillar News</h2>
+</header>
+
+<div id="news">
+"""
+
+for news in news_list:
+    html_template += f"""
+    <div class="card">
+        <a href="{news['link']}" target="_blank">{news['title']}</a>
+        <p style="color:gray; font-size:13px; margin-top:8px;">{news['date']}</p>
+    </div>
+    """
+
+html_template += """
+</div>
+</body>
+</html>
+"""
+
+with open("index.html", "w", encoding="utf-8") as f:
+    f.write(html_template)
+
+print("Done - Logo ke saath update ho gaya")
