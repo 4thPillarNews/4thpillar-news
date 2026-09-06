@@ -1,55 +1,59 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>4th Pillar 24x7 - सच का चौथा स्तंभ</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Fourth Pillar News</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Noto Sans Devanagari',sans-serif;background:#f4f4f4;color:#111}
-header{background:#0A1931;color:#fff;padding:10px 14px;text-align:center;position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:center;gap:12px;border-bottom:2px solid #C5A86A}
-header img{height:48px;width:48px;border-radius:8px;object-fit:cover;border:1.5px solid #C5A86A}
-header span{font-size:18px;font-weight:700;letter-spacing:0.5px}
-.container{max-width:700px;margin:0 auto;padding:14px 20px}
-.cat{display:inline-block;background:#d32f2f;color:#fff;font-size:11px;padding:3px 8px;border-radius:12px;margin-bottom:8px}
-.card{background:#fff;padding:16px;border-radius:12px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-.card h2{font-size:17px;line-height:1.5;margin-bottom:6px}
-.card p{font-size:14px;color:#444;line-height:1.6}
-.card small{color:#888;font-size:12px}
-#details{position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;overflow-y:auto;display:none;z-index:99;padding:20px 20px}
-#details h1{font-size:22px;line-height:1.4;margin:12px 0}
-.meta{color:#666;font-size:13px;margin-bottom:12px;border-bottom:1px solid #eee;padding-bottom:10px}
-.content p{font-size:17px;line-height:1.9;margin-bottom:14px;color:#222;white-space:pre-wrap;text-align:left}
-button{padding:10px 18px;background:#0A1931;color:#fff;border:0;border-radius:8px;margin-bottom:12px}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@500;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Noto Sans Devanagari',sans-serif}
+body{background:#f2f4f8}
+.top{background:#0b2047;display:flex;align-items:center;padding:10px 14px;gap:10px}
+.top img{width:56px}
+.top h1{color:#fff;font-size:17px;line-height:1.1}
+.top h1 b{color:#f2c14e;font-size:12px;font-weight:500;display:block;margin-top:2px}
+.top .right{margin-left:auto;color:#f2c14e;font-size:22px;display:flex;gap:14px}
+.wrap{max-width:480px;margin:0 auto;padding:14px 12px 80px}
+.head2{display:flex;justify-content:space-between;align-items:center;margin:8px 2px 14px}
+.head2 h2{font-size:23px}
+.head2 a{color:#1a5bd7;text-decoration:none;font-size:14px}
+.card{background:#fff;border-radius:14px;overflow:hidden;margin-bottom:16px;box-shadow:0 4px 12px rgba(0,0,0,.07)}
+.card .img{position:relative}
+.card .img img{width:100%;height:210px;object-fit:cover;display:block}
+.card .tag{position:absolute;top:10px;left:10px;padding:4px 12px;border-radius:20px;color:#fff;font-size:12px;background:#0b3a5f}
+.card .tag.khel{background:#e48a2c}.card .tag.tech{background:#0e6b6b}
+.card .txt{padding:12px 13px}
+.card .txt h3{font-size:17px;line-height:1.25;margin-bottom:6px}
+.card .txt p{font-size:13px;color:#555;line-height:1.45}
+.meta{margin-top:10px;display:flex;justify-content:space-between;color:#777;font-size:11px}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #ddd;display:flex;justify-content:space-around;padding:7px 0;max-width:480px;margin:0 auto}
+.bottom div{text-align:center;font-size:11px;color:#666}.bottom .on{color:#0b2047;font-weight:700}
 </style>
 </head>
 <body>
-<header>
-<img src="the4thpillarnews.jpg" alt="4th Pillar 24x7 Logo">
-<span>4th Pillar 24x7</span>
-</header>
-<div class="container" id="news-container">Loading...</div>
-<div id="details"><div id="details-inner"></div></div>
-<script>
-let allNews=[];
-fetch('news.json?v='+Date.now()).then(r=>r.json()).then(news=>{
-  allNews=news;
-  let html="";
-  for(let i=0;i<news.length;i++){
-    html+=`<div class="card" onclick="openNews(${i})"><span class="cat">${news[i].category||'खबर'}</span><h2>${news[i].title}</h2><p>${news[i].desc.substring(0,120)}...</p><small>By ${news[i].author} | ${news[i].date}</small></div>`;
-  }
-  document.getElementById('news-container').innerHTML=html;
-}).catch(e=>{
-  document.getElementById('news-container').innerHTML='Error loading news: '+e;
-});
-function openNews(i){
-  let n=allNews[i];
-  let paras=n.desc.split('\n\n').map(p=>`<p>${p}</p>`).join('');
-  document.getElementById('details-inner').innerHTML=`<button onclick="document.getElementById('details').style.display='none'">← वापस</button><br><span class="cat">${n.category||'खबर'}</span><h1>${n.title}</h1><div class="meta">By ${n.author} | ${n.date}</div><div class="content">${paras}</div>`;
-  document.getElementById('details').style.display='block';
-  window.scrollTo(0,0);
-}
-</script>
+<div class="top">
+<img src="https://i.ibb.co/5X9Wv7Yd/4p-logo-gold.png" alt="4P">
+<h1>The Fourth Pillar News<b>• Sach Ka Chautha Stambh</b></h1>
+<div class="right"><span>⌕</span><span>🔔</span><span>☰</span></div>
+</div>
+<div class="wrap">
+<div class="head2"><h2>आज की मुख्य खबरें</h2><a>सभी देखें ›</a></div>
+
+<div class="card">
+<div class="img"><img src="https://images.unsplash.com/photo-1500930540495-e92875696a16?w=800"><span class="tag">राजनीति</span></div>
+<div class="txt"><h3>महाराष्ट्र में नई कृषि योजना को मिली मंजूरी, किसानों को मिलेगा सीधा लाभ</h3><p>महाराष्ट्र सरकार ने छोटे और सीमांत किसानों को आर्थिक सहायता देने के लिए नई कृषि योजना को मंजूरी दी है। इस योजना के तहत पात्र किसानों को प्रति हेक्टेयर 10,000 रुपये की सहायता सीधे उनके बैंक खाते में स्थानांतरित की जाएगी।</p><div class="meta"><span>आज • 15 मिनट पहले • 3 मिनट पढ़ें</span><span>🔖</span></div></div>
+</div>
+
+<div class="card">
+<div class="img"><img src="https://images.unsplash.com/photo-1543351611-58f69d7c1781?w=800"><span class="tag khel">खेल</span></div>
+<div class="txt"><h3>T20 विश्व कप 2024: भारत ने सेमीफाइनल में बनाई जगह, बल्लेबाजों का शानदार प्रदर्शन</h3><p>T20 विश्व कप 2024 में भारत ने ऑस्ट्रेलिया को 24 रनों से हराकर सेमीफाइनल में जगह पक्की कर ली।</p><div class="meta"><span>कल • 3 घंटे पहले • 4 मिनट पढ़ें</span><span>🔖</span></div></div>
+</div>
+
+<div class="card">
+<div class="img"><img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800"><span class="tag tech">टेक्नोलॉजी</span></div>
+<div class="txt"><h3>भारत में 5G नेटवर्क का विस्तार, ग्रामीण क्षेत्रों में इंटरनेट पहुंच में हुआ इजाफा</h3><p>भारत में 5G नेटवर्क का विस्तार अब ग्रामीण इलाकों तक पहुंच चुका है। 500 से अधिक जिलों में सेवा शुरू।</p><div class="meta"><span>आज • 6 घंटे पहले • 3 मिनट पढ़ें</span><span>🔖</span></div></div>
+</div>
+
+</div>
+<div class="bottom"><div class="on">🏠<br>होम</div><div>📰<br>न्यूज़</div><div>▶️<br>वीडियो</div><div>✉️<br>सेव्ड</div><div>👤<br>प्रोफ़ाइल</div></div>
 </body>
 </html>
