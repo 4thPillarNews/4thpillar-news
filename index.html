@@ -3,62 +3,94 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>4TH PILLAR NEWS</title>
+<title>4TH PILLAR NEWS - Gaurav Sharma</title>
 <style>
 body{margin:0;font-family:Arial;background:#f2f2f2}
-.top{background:#c00;color:#fff;text-align:center;padding:6px;font-size:12px}
-header{background:#0f172a;color:#fff;padding:12px;display:flex;gap:10px;align-items:center}
+.top{background:#c00;color:#fff;text-align:center;padding:6px;font-size:11px}
+header{background:#0f172a;color:#fff;padding:12px;display:flex;gap:10px;align-items:center;position:sticky;top:0;z-index:10}
 .logo{width:45px;height:45px;background:#fff;border-radius:8px;object-fit:contain}
-.tabs{display:flex;gap:6px;padding:8px;background:#fff;overflow:auto}
-.tabs button{border:none;background:#e2e8f0;padding:6px 12px;border-radius:20px;font-weight:bold}
-.tabs button.active{background:#0f172a;color:#fff}
-.card{background:#fff;margin:10px;padding:14px;border-radius:10px;cursor:pointer}
-.card b{font-size:16px;color:#111;display:block}
-.card p{margin:4px 0 0;color:#666;font-size:12px}
-#detail{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#fff;z-index:99;overflow:auto;padding:16px}
-#detail button{background:#c00;color:#fff;border:none;padding:8px 14px;border-radius:6px;margin-bottom:12px}
+.card{background:#fff;margin:10px;border-radius:12px;overflow:hidden;cursor:pointer;box-shadow:0 2px 5px rgba(0,0,0,.08)}
+.card img{width:100%;height:180px;object-fit:cover}
+.info{padding:12px}
+.info b{font-size:17px;color:#111;line-height:1.3;display:block}
+.info span{font-size:12px;color:#888}
+#detail{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#fff;z-index:999;overflow:auto}
+#detail img{width:100%;height:230px;object-fit:cover}
+.pad{padding:16px}
+.pad p{line-height:1.8;font-size:16px;margin:0 0 14px 0;text-align:justify}
+.by{color:#c00;font-weight:bold;font-size:12px;margin:8px 0}
 </style>
 </head>
 <body>
-<div class="top">6 सितंबर 2026 | Ghaziabad | Reporter: Gaurav Sharma</div>
-<header><img class="logo" src="4thpillar24x7.jpg"><div><b>4TH PILLAR NEWS</b><div style="font-size:11px;color:#94a3b8">24x7 हिंदी</div></div></header>
+<div class="top">रविवार, 6 सितंबर 2026 | गाजियाबाद</div>
+<header><img class="logo" src="4thpillar24x7.jpg"><div><b>4TH PILLAR NEWS</b><div style="font-size:11px;color:#94a3b8">Reporter: Gaurav Sharma</div></div></header>
 
-<div class="tabs">
-<button class="active" onclick="filterNews('all',this)">All</button>
-<button onclick="filterNews('ghaziabad',this)">Ghaziabad</button>
-<button onclick="filterNews('national',this)">National</button>
-<button onclick="filterNews('sports',this)">Sports</button>
+<div id="list">
+<div class="card" onclick="openNews('gh1')">
+<img src="https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?w=600">
+<div class="info"><b>गाजियाबाद में भारी बारिश से जनजीवन अस्त-व्यस्त, प्रशासन अलर्ट पर</b><span>Reporter: Gaurav Sharma | 2 घंटे पहले</span></div>
 </div>
 
-<div id="news">
-<div class="card" data-cat="ghaziabad" onclick="openNews('गाजियाबाद में आज सुबह से झमाझम बारिश, जलभराव से लोग परेशान','गाजियाबाद में आज सुबह से लगातार बारिश हो रही है। कई इलाकों में जलभराव की स्थिति है। नगर निगम की टीमें मौके पर मौजूद हैं और पानी निकालने का काम चल रहा है। मौसम विभाग ने अगले 2 दिन तक बारिश का अलर्ट जारी किया है।')"><b>गाजियाबाद में आज सुबह से झमाझम बारिश, जलभराव से लोग परेशान</b><p>Ghaziabad | पूरी खबर के लिए क्लिक करें</p></div>
-
-<div class="card" data-cat="national" onclick="openNews('योगी सरकार का बड़ा फैसला, किसानों के लिए नई योजना','उत्तर प्रदेश सरकार ने किसानों के लिए नई योजना का ऐलान किया है। इस योजना के तहत किसानों को सीधे आर्थिक मदद दी जाएगी। मुख्यमंत्री योगी आदित्यनाथ ने कहा कि ये योजना जल्द ही पूरे प्रदेश में लागू होगी।')"><b>योगी सरकार का बड़ा फैसला, किसानों के लिए नई योजना</b><p>National | पूरी खबर के लिए क्लिक करें</p></div>
-
-<div class="card" data-cat="sports" onclick="openNews('विराट कोहली ने बनाया नया रिकॉर्ड, फैंस में जश्न','भारतीय क्रिकेट टीम के स्टार बल्लेबाज विराट कोहली ने एक और रिकॉर्ड अपने नाम कर लिया है। इस रिकॉर्ड के बाद सोशल मीडिया पर फैंस उन्हें बधाई दे रहे हैं।')"><b>विराट कोहली ने बनाया नया रिकॉर्ड, फैंस में जश्न</b><p>Sports | पूरी खबर के लिए क्लिक करें</p></div>
+<div class="card" onclick="openNews('up1')">
+<img src="https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=600">
+<div class="info"><b>योगी सरकार का बड़ा ऐलान, किसानों को मिलेंगे 6000 रुपये</b><span>Reporter: Gaurav Sharma | 4 घंटे पहले</span></div>
+</div>
 </div>
 
 <div id="detail">
-<button onclick="document.getElementById('detail').style.display='none'">← वापस जाएं</button>
-<h2 id="dTitle"></h2>
-<p id="dContent" style="line-height:1.6;font-size:16px"></p>
-<p style="color:#888;font-size:11px;margin-top:20px">Source: 4th Pillar News Team, Ghaziabad</p>
+<div style="padding:10px;background:#0f172a"><button onclick="closeNews()" style="background:#fff;border:none;padding:7px 14px;border-radius:6px;font-weight:bold">← वापस</button></div>
+<img id="dImg" src="">
+<div class="pad">
+<h2 id="dTitle" style="margin:0 0 5px 0"></h2>
+<div class="by">By Gaurav Sharma | 4th Pillar News, Ghaziabad | 6 सितंबर 2026</div>
+<div id="dBody"></div>
+</div>
 </div>
 
 <script>
-function filterNews(cat,btn){
- document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
- btn.classList.add('active');
- document.querySelectorAll('.card').forEach(c=>{
-   c.style.display = (cat=='all' || c.dataset.cat==cat) ? 'block' : 'none';
- });
+const newsData={
+gh1:{
+img:"https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?w=600",
+title:"गाजियाबाद में भारी बारिश से जनजीवन अस्त-व्यस्त, प्रशासन अलर्ट पर",
+paras:[
+"गाजियाबाद। गाजियाबाद में शनिवार रात से हो रही लगातार बारिश ने पूरे शहर का जनजीवन अस्त-व्यस्त कर दिया है। रविवार सुबह तक इंदिरापुरम, वैशाली, वसुंधरा और मोहन नगर के कई इलाकों में घुटनों तक पानी भर गया।",
+"मौके पर पहुंची हमारी टीम ने देखा कि सड़कों पर गाड़ियां बंद पड़ी हैं और लोगों को आने-जाने में भारी परेशानी हो रही है। नगर निगम के अधिकारियों के मुताबिक पिछले 12 घंटों में 120 मिमी बारिश दर्ज की गई है, जो इस सीजन की सबसे ज्यादा है।",
+"मौसम विभाग ने अगले 48 घंटों के लिए ऑरेंज अलर्ट जारी किया है। विभाग का कहना है कि बंगाल की खाड़ी में बना कम दबाव का क्षेत्र अब यूपी की तरफ बढ़ रहा है, जिसके चलते बारिश और तेज हो सकती है।",
+"जिलाधिकारी ने एहतियात के तौर पर सभी सरकारी और प्राइवेट स्कूलों में आज छुट्टी घोषित कर दी है। साथ ही लोगों से अपील की है कि जरूरी होने पर ही घर से बाहर निकलें।",
+"नगर निगम कमिश्नर ने बताया कि पानी निकालने के लिए 20 पंपिंग सेट लगाए गए हैं। हमारी टीम लगातार फील्ड में है। उन्होंने बताया कि शाम तक स्थिति सामान्य होने की उम्मीद है।",
+"वहीं स्थानीय लोगों का कहना है कि हर साल बारिश में यही हाल होता है। नालों की सफाई समय पर नहीं होती। प्रशासन को इस पर स्थायी समाधान निकालना चाहिए।",
+"फिलहाल प्रशासन अलर्ट मोड पर है और एनडीआरएफ की एक टीम को भी स्टैंडबाय पर रखा गया है। 4th Pillar News की टीम पल-पल की अपडेट आप तक पहुंचा रही है।"
+]
+},
+up1:{
+img:"https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=600",
+title:"योगी सरकार का बड़ा ऐलान, किसानों को मिलेंगे 6000 रुपये",
+paras:[
+"लखनऊ। उत्तर प्रदेश के मुख्यमंत्री योगी आदित्यनाथ ने किसानों के लिए एक बड़ी सौगात का ऐलान किया है। शनिवार को कैबिनेट बैठक के बाद उन्होंने कहा कि प्रदेश के सभी छोटे किसानों को सालाना 6000 रुपये की अतिरिक्त सहायता दी जाएगी।",
+"इस योजना का नाम 'मुख्यमंत्री कृषक समृद्धि योजना' रखा गया है। इसका लाभ उन किसानों को मिलेगा जिनके पास 2 हेक्टेयर से कम जमीन है। पैसा सीधे उनके बैंक खाते में हर 4 महीने में 2000-2000 रुपये की किस्त में आएगा।",
+"मुख्यमंत्री ने कहा कि हमारी सरकार किसानों की आय दोगुनी करने के लिए लगातार काम कर रही है। पिछली सरकारों ने किसानों को सिर्फ वादे दिए, हमने जमीन पर काम करके दिखाया है।",
+"कृषि मंत्री ने बताया कि इस योजना से प्रदेश के करीब 2 करोड़ 35 लाख किसानों को फायदा होगा। इसके लिए बजट में 14 हजार करोड़ रुपये का प्रावधान किया गया है। आवेदन प्रक्रिया अगले हफ्ते से शुरू होगी।",
+"किसान संगठनों ने इस फैसले का स्वागत किया है। भारतीय किसान यूनियन के नेता राकेश टिकैत ने कहा कि ये एक अच्छा कदम है, लेकिन फसल का सही दाम मिलना ज्यादा जरूरी है।",
+"विपक्ष ने इस पर सवाल उठाए हैं। समाजवादी पार्टी ने कहा कि चुनाव नजदीक आते ही सरकार को किसानों की याद आती है। ये सिर्फ चुनावी लॉलीपॉप है।",
+"फिलहाल इस ऐलान के बाद किसानों में खुशी का माहौल है। 4th Pillar News से बात करते हुए कई किसानों ने कहा कि इससे उन्हें खाद-बीज खरीदने में मदद मिलेगी।"
+]
 }
-function openNews(t,c){
- document.getElementById('dTitle').innerText=t;
- document.getElementById('dContent').innerText=c;
+};
+function openNews(id){
+ let n=newsData[id];
+ document.getElementById('dImg').src=n.img;
+ document.getElementById('dTitle').innerText=n.title;
+ let body=document.getElementById('dBody');
+ body.innerHTML="";
+ n.paras.forEach(p=>{
+   let el=document.createElement('p');
+   el.innerText=p;
+   body.appendChild(el);
+ });
  document.getElementById('detail').style.display='block';
  window.scrollTo(0,0);
 }
+function closeNews(){document.getElementById('detail').style.display='none'}
 </script>
 </body>
 </html>
