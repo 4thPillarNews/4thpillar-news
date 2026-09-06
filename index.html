@@ -2,12 +2,33 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Fourth Pillar News</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<title>द फोर्थ पिलर न्यूज़</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui;background:#f4f4f4;padding-bottom:70px}
-.top{background:#0a1931;display:flex;align-items:center;padding:10px 14px;gap:12px;height:86px;position:sticky;top:0;z-index:99}
-.top img{width:72px;height:72px;object-fit:contain;border-radius:12px}
-.top h1{color:#fff;font-size:19px;line-height:1.1}
-.top h1 span{display:block;color:#f2c14e;font-size:13px;margin-top:3px;font-weight:400
+body{font-family:'Noto Sans Devanagari',system-ui; background:#fff; -webkit-text-size-adjust:100%; word-wrap:break-word; overflow-wrap:anywhere}
+.top{background:#0a1f44; color:#fff; padding:12px 14px; display:flex; align-items:center; gap:10px; position:sticky; top:0; z-index:99}
+.top img{width:44px;height:44px;border-radius:8px;background:#fff;object-fit:contain}
+.card{margin:12px 12px; border:1px solid #eee; border-radius:14px; overflow:hidden}
+.card img{width:100%; height:auto; max-height:220px; object-fit:cover; display:block}
+.card-body{padding:12px}
+.card-body h2{font-size:17px; line-height:1.4; color:#111; font-weight:700}
+.card-body p{font-size:14px; line-height:1.6; color:#333; margin-top:6px}
+.meta{font-size:11px; color:#777; margin-top:8px}
+</style>
+</head>
+<body>
+<div class="top"><img src="the4thpillarnews.jpg"><div><b>द फोर्थ पिलर न्यूज़</b><br><small style="color:#ffda6b">• सच का चौथा स्तंभ</small></div></div>
+<h1 style="padding:14px;font-size:20px">आज की मुख्य खबरें</h1>
+<div id="list"></div>
+<script>
+fetch('./news.json?v='+Date.now()).then(r=>r.json()).then(data=>{
+ let h='';
+ data.forEach((n,i)=>{
+  h+=`<div class="card" onclick="location.href='news.html?id=${i}'"><img src="${n.image}"><div class="card-body"><h2>${n.title}</h2><p>${(n.desc||'').slice(0,180)}...</p><div class="meta">${n.date}</div></div></div>`;
+ });
+ document.getElementById('list').innerHTML=h;
+});
+</script>
+</body>
+</html>
