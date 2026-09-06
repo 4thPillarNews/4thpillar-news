@@ -1,52 +1,31 @@
-import feedparser, json, requests
-from bs4 import BeautifulSoup
-from datetime import datetime
+import feedparser
+import json
+import datetime
+import re
 
-RSS_URLS = [
- "https://news.google.com/rss?hl=hi&gl=IN&ceid=IN:hi",
- "https://www.bhaskar.com/rss-v1--category-1.xml"
-]
+RSS_URL = "https://news.google.com/rss?hl=hi&gl=IN&ceid=IN:hi"
+feed = feedparser.parse(RSS_URL)
 
-def get_full_text(link):
-    try:
-        r = requests.get(link, timeout=10, headers={'User-Agent':'Mozilla/5.0'})
-        soup = BeautifulSoup(r.text, 'html.parser')
-        paras = soup.find_all('p')
-        text = ' '.join([p.get_text() for p in paras])[:2000]
-        if len(text) < 200: return ""
-        # 5-6 paragraph me todo
-        sentences = text.split('।')
-        out = ""
-        para = ""
-        count = 0
-        for s in sentences:
-            if len(s.strip())<10: continue
-            para += s.strip() + "। "
-            count+=1
-            if count==2:
-                out += para.strip() + "\n\n"
-                para=""; count=0
-        if para: out+=para
-        return out[:1500]
-    except:
-        return ""
+def is_hindi(text):
+    # Agar text me Hindi ke akshar hain to hi rakho
+    return bool(re.search(r'[\u0900-\u097F]', text))
 
-feeds=[]
-for url in RSS_URLS:
-    d=feedparser.parse(url)
-    for e in d.entries[:5]:
-        full = get_full_text(e.link)
-        if not full: full = e.get('summary','')*3
-        feeds.append({
-            "title": e.title,
-            "desc": full[:280],
-            "content": full,
-            "image": f"https://picsum.photos/seed/{abs(hash(e.title))%1000}/600/400",
-            "date": datetime.now().strftime("%d %b, %Y • %I:%M %p"),
-            "author": "Gaurav Sharma",
-            "link": e.link
-        })
+news_list = []
+for entry in feed.entries:
+    if not is_hindi(entry.title):
+        continue  # English news ko skip
+    if len(news_list) >= 20:
+        break
+    news_list.append({
+        "title": entry.title,
+        "link": entry.link,
+        "description": entry.title,
+        "pubDate": datetime.datetime.now().strftime("%d %b, %Y - %I:%M %p"),
+        "source": entry.source.title if hasattr(entry, 'source') else "Google News",
+        "image": f"https://picsum.photos/seed/{abs(hash(entry.title))}/800/450"
+    })
 
-with open('news.json','w',encoding='utf-8') as f:
-    json.dump(feeds[:12], f, ensure_ascii=False, indent=2)
-print("Done")
+with open("news.json", "w", encoding="utf-8") as f:
+    json.dump(news_list, f, ensure_ascii=False, indent=2)
+
+print(f"Saved {len(news_list)} Hindi news only")
