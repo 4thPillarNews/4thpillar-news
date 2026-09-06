@@ -1,37 +1,47 @@
-import feedparser, json, datetime
+import feedparser, json, datetime, os
 
-# Sirf Hindi News ke RSS
-feeds = {
-    "National": "https://news.google.com/rss/search?q=India+national+news&hl=hi&gl=IN&ceid=IN:hi",
-    "International": "https://news.google.com/rss/search?q=International+samachar&hl=hi&gl=IN&ceid=IN:hi",
-    "Sports": "https://news.google.com/rss/search?q=khel+samachar&hl=hi&gl=IN&ceid=IN:hi",
-    "Ghaziabad": "https://news.google.com/rss/search?q=Ghaziabad+samachar&hl=hi&gl=IN&ceid=IN:hi",
-    "Business": "https://news.google.com/rss/search?q=vyapar+samachar&hl=hi&gl=IN&ceid=IN:hi"
+old_news=[]
+if os.path.exists('news.json'):
+    try:
+        with open('news.json','r',encoding='utf-8') as f: old_news=json.load(f)
+    except: pass
+
+sources={
+"National":["https://feeds.bbci.co.uk/hindi/rss.xml"],
+"International":["https://navbharattimes.indiatimes.com/rssfeeds/1081479906.cms"],
+"Sports":["https://navbharattimes.indiatimes.com/rssfeeds/1081479908.cms"],
+"Ghaziabad":["https://news.google.com/rss/search?q=Ghaziabad&hl=hi&gl=IN&ceid=IN:hi"],
+"Business":["https://navbharattimes.indiatimes.com/rssfeeds/1081479907.cms"]
 }
+new_list=[]; nid=len(old_news)
+for cat,urls in sources.items():
+ for url in urls:
+  try:
+   d=feedparser.parse(url)
+   for e in d.entries[:5]:
+    title=e.title[:120]
+    if any(o['title']==title for o in old_news+new_list): continue
+    new_list.append({
+     "id":nid,
+     "category":cat,
+     "title":title,
+     "date":datetime.datetime.now().strftime("%d %B %Y"),
+     "reporter":"Gaurav Sharma",
+     "location":"Ghaziabad",
+     "image":f"https://picsum.photos/seed/{nid+111}/800/500",
+     "para1":f"{title}। इस घटना को लेकर पूरे क्षेत्र में चर्चा तेज हो गई है। 4th पिलर न्यूज़ को मिली जानकारी के अनुसार यह मामला बेहद महत्वपूर्ण माना जा रहा है।",
+     "para2":"प्रत्यक्षदर्शियों और विश्वसनीय सूत्रों से मिली जानकारी के मुताबिक संबंधित विभाग ने इस विषय पर अपनी पूरी तैयारी कर ली है। लोगों में इसको लेकर काफी उत्सुकता देखी जा रही है।",
+     "para3":"स्थानीय नागरिकों का कहना है कि यदि इस पर समय रहते उचित कदम उठाए गए तो आम जनता को इसका सीधा लाभ मिलेगा। इससे विकास कार्यों को नई दिशा मिलेगी।",
+     "para4":f"रिपोर्टर गौरव शर्मा ने बताया कि {cat} से जुड़ी इस खबर पर प्रशासन की पैनी नजर बनी हुई है। हर कोई इसके पीछे की असली वजह जानना चाहता है।",
+     "para5":"प्रशासन ने स्पष्ट रूप से कहा है कि इस मामले में किसी भी प्रकार की लापरवाही को बर्दाश्त नहीं किया जाएगा। नियम सभी के लिए समान रूप से लागू रहेंगे।",
+     "para6":"आने वाले कुछ दिनों में इस खबर से जुड़ा बड़ा खुलासा सामने आने की संभावना है। सरकार के उच्च अधिकारी लगातार स्थिति पर निगरानी बनाए हुए हैं।",
+     "para7":"इस घटना के बाद राजनीतिक और सामाजिक क्षेत्रों में भी हलचल तेज हो गई है। सभी पक्ष अपने-अपने स्तर पर इसकी समीक्षा कर रहे हैं।",
+     "para8":"ताजा और सच्ची खबरें सबसे पहले हिंदी में पाने के लिए जुड़े रहिए 4th पिलर न्यूज़ के साथ। रिपोर्टर - गौरव शर्मा, गाजियाबाद।"
+    }); nid+=1
+  except: pass
 
-all_news=[]
-nid=0
-for cat, url in feeds.items():
-    data = feedparser.parse(url)
-    for e in data.entries[:6]:
-        title = e.title.replace(" - Live", "").replace(" | ", " - ")
-        all_news.append({
-            "id": nid,
-            "category": cat,
-            "title": title,
-            "date": datetime.datetime.now().strftime("%d %B %Y"),
-            "reporter": "Gaurav Sharma",
-            "location": cat,
-            "image": f"https://picsum.photos/seed/{nid+200}/800/500",
-            "para1": f"{cat} - {title} - 4th Pillar News ki khaas report. Is khabar ko lekar pure desh me charcha tez ho gayi hai.",
-            "para2": "Mili jaankari ke mutabik is maamle par sambandhit vibhag ne apni taiyari puri kar li hai. Janta is faisle ka besabri se intezar kar rahi hai.",
-            "para3": "Sthaniya logon aur visheshagyaon ka kehna hai ki is kadam se aam janta ko seedha fayda milega. Isse vikas ko nayi gati milegi.",
-            "para4": f"Reporter Gaurav Sharma ne bataya ki {cat} se judi is ghatna par sabki nazar bani hui hai. Har koi iski asli wajah jaanna chahta hai.",
-            "para5": "Prashasan ne is mamle me sakhti dikhate hue kaha hai ki kisi bhi tarah ki laparwahi bardasht nahi ki jayegi aur niyam sabke liye barabar honge.",
-            "para6": "Aane wale kuch dino me is khabar se juda bada update saamne aa sakta hai. Sarkar is par lagatar nazar banaye hue hai.",
-            "para7": f"Desh-duniya ki aisi hi har khabar Hindi me sabse pehle paane ke liye jude rahiye 4th Pillar News ke saath. Reporter: Gaurav Sharma, {cat} Desk."
-        })
-        nid+=1
-
-with open('news.json','w',encoding='utf-8') as f:
-    json.dump(all_news,f,ensure_ascii=False,indent=2)
+final=new_list+old_news
+final=final[:100]
+for i,n in enumerate(final): n['id']=i
+with open('news.json','w',encoding='utf-8') as f: json.dump(final,f,ensure_ascii=False,indent=2)
+print(f"Total {len(final)} khabrein")
