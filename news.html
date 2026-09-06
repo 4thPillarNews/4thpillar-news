@@ -1,1 +1,9 @@
-
+<!DOCTYPE html><html lang="hi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>News</title>
+<style>body{font-family:Arial;margin:0;background:#fff}header{background:#000;color:#fff;padding:12px}a{color:#fff;text-decoration:none}.box{max-width:800px;margin:auto;padding:20px}img{width:100%;border-radius:8px}</style></head>
+<body><header><a href="./">← Back to 4th Pillar News</a></header><div class="box" id="detail"></div>
+<script>
+fetch('news.json').then(r=>r.json()).then(data=>{
+const id=new URLSearchParams(location.search).get('id');const n=data[id];
+document.getElementById('detail').innerHTML=`<img src="${n.image}"><h1>${n.title}</h1><p><b>${n.date} | Reporter: ${n.reporter} | ${n.location}</b></p><p>${n.content}</p>`;
+});
+</script></body></html>
