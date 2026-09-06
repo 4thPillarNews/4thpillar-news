@@ -1,14 +1,15 @@
-<!DOCTYPE html>
-<html lang="hi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>4th Pillar News</title>
-<style>body{margin:0;font-family:Arial;background:#f2f2f2}header{background:#000;color:#fff;padding:12px 20px;display:flex;align-items:center;gap:10px}header img{height:45px;background:#fff;padding:3px;border-radius:4px}.container{max-width:800px;margin:auto;padding:15px}.card{background:#fff;margin-bottom:15px;border-radius:8px;overflow:hidden;box-shadow:0 2px 5px #0002}.card img{width:100%}.card div{padding:12px}button{background:#b80000;color:#fff;border:0;padding:8px 14px;border-radius:4px;cursor:pointer}</style></head>
-<body>
-<header><img src="logo.png"><h2 style="margin:0">4TH PILLAR NEWS</h2></header>
-<div class="container" id="news"></div>
+<div style="text-align:center;padding:10px;background:#fff">
+<button onclick="filterNews('All')">All</button>
+<button onclick="filterNews('National')">National</button>
+<button onclick="filterNews('International')">International</button>
+<button onclick="filterNews('Sports')">Sports</button>
+<button onclick="filterNews('Ghaziabad')">Ghaziabad</button>
+</div>
 <script>
+function filterNews(cat){
 fetch('news.json').then(r=>r.json()).then(data=>{
-let h='';data.forEach(n=>{
-h+=`<div class="card"><img src="${n.image}"><div><h3>${n.title}</h3><p>${n.description}</p><small>${n.date} | ${n.reporter}</small><br><br><button onclick="location.href='news.html?id=${n.id}'">Puri Khabar Padhein</button></div></div>`;
-});document.getElementById('news').innerHTML=h;
-});
-</script></body></html>
+let f = cat=='All' ? data : data.filter(n=>n.category==cat);
+// wahi card wala code yahan use kar
+})
+}
+</script>
