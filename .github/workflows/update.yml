@@ -1,21 +1,20 @@
-name: Auto News Update
 on:
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: '0 * * * *' # har ghante
   workflow_dispatch:
+
 jobs:
   update:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
+        with: { python-version: '3.9' }
       - run: pip install feedparser
       - run: python bot.py
       - run: |
-          git config user.name "bot"
-          git config user.email "bot@bot.com"
-          git add index.html
-          git commit -m "auto hindi news" || true
+          git config user.name "Gaurav Sharma"
+          git config user.email "4thpillarnews@github.com"
+          git add news.json
+          git commit -m "auto update hindi news" || exit 0
           git push
