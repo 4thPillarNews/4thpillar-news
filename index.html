@@ -2,49 +2,76 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>4TH PILLAR NEWS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4th Pillar News - Reporter Gaurav Sharma</title>
 <style>
-body{margin:0;font-family:Arial;background:#f2f2f2}
-.top{background:#c00;color:#fff;text-align:center;padding:6px;font-size:12px}
-header{background:#0f172a;color:#fff;padding:12px;display:flex;gap:10px;align-items:center}
-.logo{width:45px;height:45px;background:#fff;border-radius:8px;object-fit:contain}
-.tabs{display:flex;gap:6px;padding:8px;background:#fff;overflow:auto}
-.tabs button{border:none;background:#e2e8f0;padding:6px 12px;border-radius:20px;font-weight:bold}
-.tabs button.active{background:#0f172a;color:#fff}
-.card{background:#fff;margin:10px;padding:14px;border-radius:10px}
-.card a{font-weight:800;color:#111;text-decoration:none;font-size:16px}
-.card p{margin:4px 0 0;color:#666;font-size:12px}
+body{font-family:Arial;margin:0;background:#f4f4f4}
+header{background:#b91c1c;color:#fff;padding:15px;text-align:center;position:sticky;top:0}
+.cat-bar{background:#fff;padding:10px;text-align:center}
+.cat-bar button{margin:4px;padding:7px 12px;border:1px solid #b91c1c;background:#fff;color:#b91c1c;border-radius:20px}
+.card{background:#fff;margin:12px;border-radius:10px;overflow:hidden;box-shadow:0 2px 5px #0001}
+.card img{width:100%;height:200px;object-fit:cover}
+.card-body{padding:12px}
+.card-body h3{margin:0 0 5px;font-size:18px;color:#111}
+.meta{font-size:12px;color:#666}
+.read{display:block;background:#b91c1c;color:#fff;text-align:center;padding:10px;margin:10px;border-radius:5px;text-decoration:none}
+#detail{background:#fff;min-height:100vh;padding:15px;display:none}
+#detail img{width:100%;border-radius:10px}
 </style>
 </head>
 <body>
-<div class="top">6 सितंबर 2026 | Ghaziabad | Reporter: Gaurav Sharma</div>
-<header><img class="logo" src="4thpillar24x7.jpg"><div><b>4TH PILLAR NEWS</b><div style="font-size:11px;color:#94a3b8">24x7 हिंदी</div></div></header>
+<header><h2>4th PILLAR NEWS</h2><small>Reporter: Gaurav Sharma | Ghaziabad</small></header>
 
-<div class="tabs">
-<button class="active" onclick="filterNews('all',this)">All</button>
-<button onclick="filterNews('national',this)">National</button>
-<button onclick="filterNews('international',this)">International</button>
-<button onclick="filterNews('sports',this)">Sports</button>
-<button onclick="filterNews('ghaziabad',this)">Ghaziabad</button>
+<div id="list-view">
+<div class="cat-bar">
+<button onclick="loadCat('All')">All</button>
+<button onclick="loadCat('National')">National</button>
+<button onclick="loadCat('International')">International</button>
+<button onclick="loadCat('Sports')">Sports</button>
+<button onclick="loadCat('Ghaziabad')">Ghaziabad</button>
+</div>
+<div id="news-list"></div>
 </div>
 
-<div id="news">
-<div class="card" data-cat="ghaziabad"><a href="https://www.amarujala.com/uttar-pradesh/ghaziabad" target="_blank">गाजियाबाद में आज सुबह से झमाझम बारिश, जलभराव से लोग परेशान</a><p>Ghaziabad | आज की खबर</p></div>
-<div class="card" data-cat="national"><a href="https://www.abplive.com" target="_blank">दिल्ली-यूपी बॉर्डर पर बड़ा हादसा, कई गाड़ियों की टक्कर</a><p>National | ब्रेकिंग</p></div>
-<div class="card" data-cat="national"><a href="https://www.abplive.com" target="_blank">योगी सरकार का बड़ा फैसला, किसानों के लिए नई योजना</a><p>National | UP News</p></div>
-<div class="card" data-cat="international"><a href="https://www.bbc.com/hindi" target="_blank">अमेरिका में तूफान का अलर्ट, भारतीयों के लिए एडवाइजरी</a><p>International | दुनिया</p></div>
-<div class="card" data-cat="sports"><a href="https://www.abplive.com/sports" target="_blank">विराट कोहली ने बनाया नया रिकॉर्ड, फैंस में जश्न</a><p>Sports | क्रिकेट</p></div>
-<div class="card" data-cat="ghaziabad"><a href="https://www.amarujala.com" target="_blank">गाजियाबाद नगर निगम का नया प्लान, अब हर गली चमकेगी</a><p>Ghaziabad | स्थानीय</p></div>
-</div>
+<div id="detail"></div>
 
 <script>
-function filterNews(cat,btn){
- document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
- btn.classList.add('active');
- document.querySelectorAll('.card').forEach(c=>{
-   c.style.display = (cat=='all' || c.dataset.cat==cat) ? 'block' : 'none';
- });
+let allData=[];
+fetch('news.json').then(r=>r.json()).then(data=>{
+allData=data;
+showList(data);
+let id=new URLSearchParams(location.search).get('id');
+if(id!=null) showDetail(id);
+});
+
+function showList(data){
+let html='';
+data.forEach(n=>{
+html+=`<div class="card">
+<img src="${n.image}"><div class="card-body">
+<h3>${n.title}</h3><div class="meta">${n.category} | ${n.date} | Reporter: ${n.reporter}</div>
+<a class="read" href="?id=${n.id}" onclick="showDetail(${n.id});return false;">Puri Khabar Padhein</a>
+</div></div>`;
+});
+document.getElementById('news-list').innerHTML=html;
+}
+function loadCat(cat){
+if(cat=='All') showList(allData);
+else showList(allData.filter(x=>x.category==cat));
+}
+function showDetail(id){
+let n=allData.find(x=>x.id==id);
+if(!n) return;
+document.getElementById('list-view').style.display='none';
+let d=document.getElementById('detail');
+d.style.display='block';
+d.innerHTML=`<a href="./" style="color:#b91c1c">← Wapas</a>
+<h1>${n.title}</h1>
+<div class="meta">${n.category} | ${n.date} | Reporter: ${n.reporter}</div>
+<img src="${n.image}"><br><br>
+<p>${n.para1}</p><p>${n.para2}</p><p>${n.para3}</p><p>${n.para4}</p><p>${n.para5}</p><p>${n.para6}</p><p>${n.para7}</p>
+<br><a href="./" style="display:block;background:#b91c1c;color:#fff;text-align:center;padding:12px;text-decoration:none;border-radius:5px">← Sabhi Khabrein</a>`;
+window.scrollTo(0,0);
 }
 </script>
 </body>
