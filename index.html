@@ -1,40 +1,13 @@
-<!DOCTYPE html>
-<html lang="hi">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>4th Pillar News</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui;background:#f5f5f5;line-height:2;color:#111}
-.top{background:#0b2047;display:flex;align-items:center;padding:10px 14px;gap:12px;position:sticky;top:0;z-index:10}
-.top img{width:52px;height:52px;border-radius:10px;background:#fff;object-fit:cover;border:2px solid #f2c14e}
-.top h1{color:#fff;font-size:18px}
-.card{background:#fff;margin:12px auto;padding:18px;border-radius:12px;max-width:800px}
-.meta span{background:#fff3f3;color:#b71c1c;padding:3px 10px;border-radius:20px;border:1px solid #ffcdd2;font-size:12px}
-#modal{display:none;position:fixed;inset:0;background:#fff;z-index:100;overflow:auto}
-#mhead{background:#0b2047;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;position:sticky;top:0}
-#mbody{padding:22px;max-width:800px;margin:auto}
-#mbody p{margin-bottom:18px;font-size:18px;text-align:justify}
-</style>
-</head>
-<body>
-<div class="top">
-<img src="the4thpillarnews.jpg" onerror="this.onerror=null; this.src='https://iili.io/FxLxV5J.png';">
-<h1>The Fourth Pillar News<b style="color:#f2c14e;font-size:11px;display:block">Sach Ka Chautha Stambh | Gaurav Sharma</b></h1>
-</div>
-<div id="list"><p style="text-align:center;padding:40px">खबर लाई जा रही है...</p></div>
-<div id="modal"><div id="mhead"><b>4th Pillar News</b><button onclick="modal.style.display='none'" style="background:#fff;color:#0b2047;border:0;padding:6px 14px;border-radius:20px;font-weight:bold">बंद करें ✕</button></div><div id="mbody"></div></div>
-
 <script>
 let newsList=[];
-
 async function loadDirect(){
 let listEl=document.getElementById('list');
+let ok=false;
+
+// TRY 1: DIRECT BBC SITE
 try{
-// TRY 1: DIRECT SITE
 let proxy=`https://api.allorigins.win/get?url=${encodeURIComponent('https://www.bbc.com/hindi')}`;
-let res=await fetch(proxy,{signal:AbortSignal.timeout(6000)});
+let res=await fetch(proxy,{signal:AbortSignal.timeout(5000)});
 let data=await res.json();
 let doc=new DOMParser().parseFromString(data.contents,'text/html');
 let links=[...doc.querySelectorAll('a[href*="/hindi/articles/"]')];
@@ -42,22 +15,42 @@ let map=new Map();
 links.forEach(a=>{
  let href=a.href.startsWith('http')?a.href:'https://www.bbc.com'+a.getAttribute('href');
  let title=a.innerText.trim();
- if(title.length>20 && title.length<150 &&!map.has(href) &&!title.toLowerCase().includes('bbc')){
-   map.set(href,title);
- }
+ if(title.length>20 &&!map.has(href)) map.set(href,title);
 });
-newsList=[...map.entries()].slice(0,15).map(([link,title])=>({link,title, type:'direct'}));
-if(newsList.length>0) throw 'success_direct'; // jump to render
-}catch(e){ console.log('direct fail, trying rss'); }
+newsList=[...map.entries()].slice(0,12).map(([link,title])=>({link,title,content:''}));
+if(newsList.length>3) ok=true;
+}catch(e){}
 
+if(!ok){
+// TRY 2: RSS via ALLORIGINS (ye India me chalta hai)
 try{
-// TRY 2: RSS BACKUP - TAAKI KHALI NA RAHE
+let proxy2=`https://api.allorigins.win/get?url=${encodeURIComponent('https://feeds.bbci.co.uk/hindi/rss.xml')}`;
+let res2=await fetch(proxy2,{signal:AbortSignal.timeout(5000)});
+let data2=await res2.json();
+let doc2=new DOMParser().parseFromString(data2.contents,'text/xml');
+let items=[...doc2.querySelectorAll('item')];
+newsList=items.slice(0,12).map(it=>({
+ title:it.querySelector('title').textContent,
+ link:it.querySelector('link').textContent,
+ content:it.querySelector('description').textContent
+}));
+if(newsList.length>0) ok=true;
+}catch(e){}
+}
+
+if(!ok){
+// TRY 3: RSS2JSON LAST
+try{
 let r=await fetch('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent('https://feeds.bbci.co.uk/hindi/rss.xml'));
 let j=await r.json();
-newsList=j.items.slice(0,15).map(it=>({link:it.link, title:it.title, content:it.content, description:it.description, type:'rss'}));
-}catch(err){
-listEl.innerHTML='<p style="text-align:center;padding:40px">Network slow hai - Refresh karo</p>';
-return;
+newsList=j.items.slice(0,12).map(it=>({title:it.title,link:it.link,content:it.content||it.description}));
+ok=true;
+}catch(e){}
+}
+
+if(!ok){
+ listEl.innerHTML='<p style="text-align:center;padding:20px">Net slow hai, <button onclick="loadDirect()">Retry</button> dabao</p>';
+ return;
 }
 renderList();
 }
@@ -83,29 +76,20 @@ let proxy=`https://api.allorigins.win/get?url=${encodeURIComponent(it.link)}`;
 let res=await fetch(proxy);
 let data=await res.json();
 let doc=new DOMParser().parseFromString(data.contents,'text/html');
-paras=[...doc.querySelectorAll('main p, article p, div[data-component="text-block"] p')].map(p=>p.innerText.trim()).filter(t=>t.length>50 &&!t.toLowerCase().includes('bbc') &&!t.includes('फॉलो'));
+paras=[...doc.querySelectorAll('main p, article p, div[data-component="text-block"] p')].map(p=>p.innerText.trim()).filter(t=>t.length>50 &&!t.toLowerCase().includes('bbc'));
 paras=[...new Set(paras)];
 }catch(e){
-// agar direct fail to rss content se
-if(it.content){
-let clean=it.content.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
+let clean=(it.content||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
 paras=clean.split('।').map(s=>s.trim()).filter(s=>s.length>40);
 }
-}
-
- // ===== TERA REARRANGE LOGIC =====
- let arranged = paras.length>=6? [paras[1],paras[0],paras[2],paras[4],paras[3],paras[5]] : paras;
- arranged = arranged.slice(0,6).map(p=>p.replace('ने कहा','ने बताया').replace('के अनुसार','के मुताबिक'));
- // ===============================
-
+let arranged = paras.length>=6? [paras[1],paras[0],paras[2],paras[4],paras[3],paras[5]] : paras;
+arranged = arranged.slice(0,6).map(p=>p.replace('ने कहा','ने बताया').replace('के अनुसार','के मुताबिक'));
 body.innerHTML=`
 <h1>${it.title}</h1>
 <div class="meta"><span>लेखक: Gaurav Sharma</span><span>4th Pillar News</span></div>
 ${arranged.map(p=>`<p>${p}।</p>`).join('')}
-<br><p><b>रिपोर्ट: Gaurav Sharma, 4th Pillar News</b></p>
+<br><p><b>रिपोर्ट: Gaurav Sharma</b></p>
 `;
 }
 loadDirect();
 </script>
-</body>
-</html>
