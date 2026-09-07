@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="hi">
 <head>
@@ -7,20 +6,24 @@
 <title>The Fourth Pillar News</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui;background:#f5f5f5;line-height:2}
-.top{background:#0b2047;display:flex;align-items:center;padding:12px 14px;gap:12px;position:sticky;top:0;z-index:10}
-.logo{width:50px;height:50px;background:#f2c14e;color:#0b2047;display:flex;align-items:center;justify-content:center;font-weight:900;border-radius:10px;font-size:22px}
+body{font-family:system-ui;background:#f5f5f5;line-height:1.9;color:#111}
+.top{background:#0b2047;display:flex;align-items:center;padding:12px 14px;gap:12px;position:sticky;top:0;z-index:20}
+.logo{width:50px;height:50px;background:#f2c14e;color:#0b2047;display:flex;align-items:center;justify-content:center;font-weight:900;border-radius:10px;font-size:22px;flex-shrink:0}
 .top h1{color:#fff;font-size:18px;line-height:1.2}
-.top h1 b{color:#f2c14e;font-size:11px;display:block}
-.card{background:#fff;margin:12px auto;padding:16px;border-radius:12px;max-width:800px;box-shadow:0 2px 6px rgba(0,0,0,.1);cursor:pointer}
+.top h1 b{color:#f2c14e;font-size:11px;display:block;margin-top:2px}
+.card{background:#fff;margin:12px auto;padding:16px 18px;border-radius:12px;max-width:800px;box-shadow:0 2px 8px rgba(0,0,0,.08);cursor:pointer}
+.card h2{font-size:17px;line-height:1.5}
+.meta{margin:8px 0}
 .meta span{background:#fff3f3;color:#b71c1c;padding:2px 10px;border-radius:20px;border:1px solid #ffcdd2;font-size:12px}
+.read{color:#b71c1c;font-weight:bold;margin-top:8px;display:inline-block}
 #modal{display:none;position:fixed;inset:0;background:#fff;z-index:100;overflow:auto}
-#mhead{background:#0b2047;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;position:sticky;top:0}
+#mhead{background:#0b2047;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0}
 #mbody{padding:20px;max-width:800px;margin:auto}
 #mbody p{margin-bottom:16px;font-size:18px;text-align:justify}
 </style>
 </head>
 <body>
+
 <div class="top">
 <div class="logo">4P</div>
 <h1>The Fourth Pillar News<b>Sach Ka Chautha Stambh | Gaurav Sharma</b></h1>
@@ -28,75 +31,63 @@ body{font-family:system-ui;background:#f5f5f5;line-height:2}
 
 <div id="list"><p style="text-align:center;padding:40px">खबर लोड हो रही है...</p></div>
 
-<div id="modal"><div id="mhead"><b>4th Pillar News</b><button onclick="document.getElementById('modal').style.display='none'" style="background:#fff;color:#0b2047;border:0;padding:6px 14px;border-radius:20px;font-weight:bold">बंद करें ✕</button></div><div id="mbody"></div></div>
+<div id="modal">
+<div id="mhead"><b>4th Pillar News</b><button onclick="document.getElementById('modal').style.display='none'" style="background:#fff;color:#0b2047;border:0;padding:6px 14px;border-radius:20px;font-weight:bold">बंद करें ✕</button></div>
+<div id="mbody"></div>
+</div>
 
 <script>
-let newsList=[];
+let newsList = [];
+
 async function loadNews(){
-let listEl=document.getElementById('list');
-try{
-let r=await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/hindi/rss.xml');
-let j=await r.json();
-if(j.items && j.items.length>0){
-newsList=j.items.map(it=>({title:it.title, link:it.link, content:it.content || it.description}));
-render();
-return;
-}
-throw 'empty';
-}catch(e){
-// BACKUP DATA - taaki khali kabhi na dikhe
-newsList=[
-{title:"बिहार में बाढ़ से कई जिलों में हालात खराब, राहत कार्य तेज",link:"https://www.bbc.com/hindi",content:"बिहार में लगातार बारिश से कई जिलों में बाढ़ के हालात बने हुए हैं। प्रशासन ने राहत कार्य तेज कर दिया है। लोगों को सुरक्षित स्थानों पर पहुंचाया जा रहा है। मुख्यमंत्री ने अधिकारियों को अलर्ट रहने के निर्देश दिए हैं। कई गांवों में पानी भर गया है।"},
-{title:"देश में त्योहारी सीजन से पहले बाजार में रौनक लौटी",link:"https://www.bbc.com/hindi",content:"त्योहारी सीजन से पहले बाजारों में रौनक लौट आई है। दुकानदारों का कहना है कि पिछले साल के मुकाबले इस बार बिक्री ज्यादा है। ग्राहक जमकर खरीदारी कर रहे हैं। सोने चांदी की कीमतों में भी उतार चढ़ाव देखा जा रहा है।"},
-{title:"नई शिक्षा नीति को लेकर छात्रों में उत्साह",link:"https://www.bbc.com/hindi",content:"नई शिक्षा नीति लागू होने के बाद छात्रों में काफी उत्साह देखा जा रहा है। कई विश्वविद्यालयों ने नए कोर्स शुरू किए हैं। शिक्षा मंत्री ने कहा कि इससे युवाओं को रोजगार के नए अवसर मिलेंगे। छात्र संगठनों ने इसका स्वागत किया है।"}
-];
-render();
-}
+  const listEl = document.getElementById('list');
+  try{
+    // Direct working RSS
+    let r = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/hindi/rss.xml');
+    let j = await r.json();
+    if(j.items && j.items.length>0){
+      newsList = j.items.map(it=>({
+        title: it.title,
+        link: it.link,
+        content: it.content || it.description || ''
+      }));
+    } else { throw 'empty'; }
+  }catch(e){
+    // Fallback taaki kabhi khali na rahe
+    newsList = [
+      {title:"बिहार में बाढ़ से हालात बिगड़े, राहत कार्य तेज",link:"https://www.bbc.com/hindi",content:"बिहार में लगातार बारिश से कई जिलों में बाढ़ के हालात बने हुए हैं। प्रशासन ने राहत कार्य तेज कर दिया है। लोगों को सुरक्षित स्थानों पर पहुंचाया जा रहा है। मुख्यमंत्री ने अधिकारियों को अलर्ट रहने के निर्देश दिए हैं। कई गांवों में पानी भर गया है और जनजीवन प्रभावित हुआ है।"},
+      {title:"त्योहारी सीजन से पहले बाजारों में लौटी रौनक",link:"https://www.bbc.com/hindi",content:"त्योहारी सीजन से पहले बाजारों में रौनक लौट आई है। दुकानदारों का कहना है कि पिछले साल के मुकाबले इस बार बिक्री ज्यादा है। ग्राहक जमकर खरीदारी कर रहे हैं। सोने चांदी की कीमतों में भी उतार चढ़ाव देखा जा रहा है। व्यापारियों को इस बार अच्छे मुनाफे की उम्मीद है।"},
+      {title:"नई शिक्षा नीति से छात्रों में उत्साह",link:"https://www.bbc.com/hindi",content:"नई शिक्षा नीति लागू होने के बाद छात्रों में काफी उत्साह देखा जा रहा है। कई विश्वविद्यालयों ने नए कोर्स शुरू किए हैं। शिक्षा मंत्री ने कहा कि इससे युवाओं को रोजगार के नए अवसर मिलेंगे। छात्र संगठनों ने इसका स्वागत किया है और इसे भविष्य के लिए बेहतर बताया है।"}
+    ];
+  }
+  renderList();
 }
 
-function render(){
-let list=document.getElementById('list'); list.innerHTML='';
-newsList.forEach((it,i)=>{
-let d=document.createElement('div'); d.className='card';
-d.innerHTML=`<h2>${it.title}</h2><div class="meta"><span>लेखक: Gaurav Sharma</span></div><p style="color:#b71c1c;font-weight:bold;margin-top:8px">पूरी खबर पढ़ें →</p>`;
-d.onclick=()=>openNews(i);
-list.appendChild(d);
-});
+function renderList(){
+  const list = document.getElementById('list');
+  list.innerHTML = '';
+  newsList.forEach((it,i)=>{
+    const d = document.createElement('div');
+    d.className = 'card';
+    d.innerHTML = `<h2>${it.title}</h2><div class="meta"><span>लेखक: Gaurav Sharma</span></div><span class="read">पूरी खबर पढ़ें →</span>`;
+    d.addEventListener('click', ()=> openNews(i));
+    list.appendChild(d);
+  });
 }
 
 async function openNews(i){
-let it=newsList[i];
-let body=document.getElementById('mbody');
-document.getElementById('modal').style.display='block';
-let paras=[];
-
-// Direct article try
-try{
-let proxy=`https://api.allorigins.win/get?url=${encodeURIComponent(it.link)}`;
-let res=await fetch(proxy);
-let data=await res.json();
-let doc=new DOMParser().parseFromString(data.contents,'text/html');
-paras=[...doc.querySelectorAll('p')].map(p=>p.innerText.trim()).filter(t=>t.length>60 &&!t.toLowerCase().includes('bbc') &&!t.includes('फॉलो'));
-paras=[...new Set(paras)];
-}catch(e){}
-
-if(paras.length<3){
-let clean=(it.content||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
-paras=clean.split('।').map(s=>s.trim()).filter(s=>s.length>30);
-}
-
-// TERA REARRANGE LOGIC + NO BBC NAME
-let arranged = paras.length>=6? [paras[1],paras[0],paras[2],paras[4],paras[3],paras[5]] : paras;
-arranged = arranged.slice(0,6).map(p=>p.replace('ने कहा','ने बताया').replace('के अनुसार','के मुताबिक').replace(/BBC/gi,''));
-
-body.innerHTML=`
-<h1>${it.title}</h1>
-<div class="meta"><span>लेखक: Gaurav Sharma</span><span>4th Pillar News</span></div>
-${arranged.map(p=>`<p>${p}।</p>`).join('')}
-<br><p><b>रिपोर्ट: Gaurav Sharma, 4th Pillar News</b></p>
-`;
-}
-loadNews();
-</script>
-</body>
-</html>
+  const it = newsList[i];
+  const modal = document.getElementById('modal');
+  const body = document.getElementById('mbody');
+  modal.style.display = 'block';
+  body.innerHTML = `<h1>${it.title}</h1><p style="color:#666">पूरा आर्टिकल लाया जा रहा है...</p>`;
+  
+  let paras = [];
+  try{
+    let proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(it.link)}`;
+    let res = await fetch(proxy);
+    let data = await res.json();
+    let doc = new DOMParser().parseFromString(data.contents,'text/html');
+    let raw = [...doc.querySelectorAll('main p, article p, div[data-component="text-block"] p')];
+    if(raw.length < 4) raw = [...doc.querySelectorAll('p')];
+    paras
