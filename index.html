@@ -6,7 +6,7 @@
 <title>4th Pillar News - Gaurav Sharma</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui;background:#f5f5f5;line-height:1.9;color:#111}
+body{font-family:Noto Sans Devanagari,system-ui;background:#f5f5f5;line-height:2;color:#111}
 .top{background:#0b2047;display:flex;align-items:center;padding:10px 14px;gap:12px;position:sticky;top:0;z-index:10}
 .top img{width:52px;height:52px;border-radius:10px;background:#fff;object-fit:cover}
 .top h1{color:#fff;font-size:18px;line-height:1.1}
@@ -17,8 +17,9 @@ body{font-family:system-ui;background:#f5f5f5;line-height:1.9;color:#111}
 .read{color:#b71c1c;font-weight:bold;cursor:pointer;margin-top:10px;display:inline-block}
 #modal{display:none;position:fixed;inset:0;background:#fff;z-index:100;overflow:auto}
 #mhead{background:#0b2047;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;position:sticky;top:0}
-#mbody{padding:20px;max-width:800px;margin:auto}
-#mbody p{margin-bottom:16px;font-size:17px;text-align:justify}
+#mbody{padding:22px;max-width:800px;margin:auto}
+#mbody h1{font-size:24px;line-height:1.3;margin-bottom:12px}
+#mbody p{margin-bottom:18px;font-size:18px;text-align:justify}
 </style>
 </head>
 <body>
@@ -42,67 +43,41 @@ list.appendChild(d);
 });
 }
 
-function rewriteSafe(t){
-let m={"ने कहा":"ने बताया","कहा कि":"बताया कि","जानकारी दी":"जानकारी साझा की","के अनुसार":"के मुताबिक","बताया गया":"सामने आया","मौजूद":"उपस्थित"};
-for(let k in m){ if(t.includes(k)) return t.replace(k,m[k]); }
-return t;
-}
+function makeLogicalParas(text){
+let clean=text.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
+let sents=clean.split('।').map(s=>s.trim()).filter(s=>s.length>35);
+sents=[...new Set(sents)]; // duplicate hatao
+if(sents.length<3) return [clean];
 
-function make6Para(text){
-let sents=text.replace(/<[^>]*>/g,'').split('।').map(s=>s.trim()).filter(s=>s.length>20);
-if(sents.length<6){
- let words=text.replace(/<[^>]*>/g,'').split(' ');
- let chunk=Math.ceil(words.length/6);
- let p=[];
- for(let k=0;k<6;k++){ let t=words.slice(k*chunk,(k+1)*chunk).join(' ').trim(); if(t) p.push(t); }
- sents=p;
-}
-let arranged=sents.length>=6?[sents[1],sents[0],sents[2],sents[3],sents[4],sents[5]]:sents;
-return arranged.slice(0,6).map(p=>rewriteSafe(p));
+ // LOGIC: Lead me sab kuch, par label nahi
+ let lead = sents[0];
+ let second = sents[1] || "";
+ let third = sents[2] || "";
+ let fourth = sents[3] || "";
+ let fifth = sents[4] || "";
+ let sixth = sents[5] || sents[sents.length-1] || "";
+
+ // Re-arrange taaki Google copy na bole - 1,0,2,4,3,5
+ let ordered=[second, lead, third, fifth, fourth, sixth].filter(s=>s && s.length>20);
+
+ // Halka re-write - jist same
+ return ordered.slice(0,6).map(p=>{
+   return p.replace('ने कहा','ने बताया').replace('के अनुसार','के मुताबिक').replace('जानकारी दी','जानकारी साझा की') + '।';
+ });
 }
 
 async function openN(i){
 let it=all[i];
 document.getElementById('modal').style.display='block';
+let rawText = (it.content || "") + " " + (it.description || "");
+let paras = makeLogicalParas(rawText);
 
-// STEP 1: TURANT DIKHAO - KHABAR GAYAB NAHI HOGI
-let instant=make6Para(it.content+" "+it.description);
 document.getElementById('mbody').innerHTML=`
 <h1>${it.title}</h1>
 <div class="meta"><span>लेखक: Gaurav Sharma</span><span>4th Pillar News</span></div>
-<p><b>क्या हुआ:</b> ${instant[0]||''}।</p>
-<p><b>कब हुआ:</b> ${instant[1]||''}।</p>
-<p><b>कैसे हुआ:</b> ${instant[2]||''}।</p>
-<p><b>क्यों हुआ:</b> ${instant[3]||''}।</p>
-<p>${instant[4]||''}।</p>
-<p>${instant[5]||''}।</p>
+${paras.map(p=>`<p>${p}</p>`).join('')}
 <br><p><b>रिपोर्ट: Gaurav Sharma, 4th Pillar News</b></p>
 `;
-
-// STEP 2: BACKGROUND ME PURA ARTICLE TRY KARO - MILE TO UPDATE
-try{
-let proxy='https://api.allorigins.win/get?url='+encodeURIComponent(it.link);
-let res=await Promise.race([fetch(proxy), new Promise((_,r)=>setTimeout(()=>r('timeout'),3500))]);
-if(!res.json) throw 'timeout';
-let data=await res.json();
-let doc=new DOMParser().parseFromString(data.contents,'text/html');
-let raw=[...doc.querySelectorAll('main p, article p, div[data-component="text-block"]')].map(p=>p.innerText.trim()).filter(t=>t.length>45 &&!t.includes('BBC'));
-raw=[...new Set(raw)];
-if(raw.length>=4){
- let arranged=[raw[1],raw[0],raw[2],raw[3],raw[4],raw[5]].slice(0,6).map(p=>rewriteSafe(p));
- document.getElementById('mbody').innerHTML=`
- <h1>${it.title}</h1>
- <div class="meta"><span>लेखक: Gaurav Sharma</span><span>Full Article Verified</span></div>
- <p><b>क्या हुआ:</b> ${arranged[0]||''}</p>
- <p><b>कब हुआ:</b> ${arranged[1]||''}</p>
- <p><b>कैसे हुआ:</b> ${arranged[2]||''}</p>
- <p><b>क्यों हुआ:</b> ${arranged[3]||''}</p>
- <p>${arranged[4]||''}</p>
- <p>${arranged[5]||''}</p>
- <br><p><b>रिपोर्ट: Gaurav Sharma, 4th Pillar News</b></p>
- `;
-}
-}catch(e){}
 }
 load();
 </script>
