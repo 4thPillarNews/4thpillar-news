@@ -8,7 +8,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:system-ui;background:#f5f5f5;line-height:2;color:#111}
 .top{background:#0b2047;display:flex;align-items:center;padding:10px 14px;gap:12px;position:sticky;top:0;z-index:10}
-.top img{width:52px;height:52px;border-radius:10px;background:#fff}
+.top img{width:52px;height:52px;border-radius:10px;background:#fff;object-fit:cover;border:2px solid #f2c14e}
 .top h1{color:#fff;font-size:18px}
 .card{background:#fff;margin:12px auto;padding:18px;border-radius:12px;max-width:800px}
 .meta span{background:#fff3f3;color:#b71c1c;padding:3px 10px;border-radius:20px;border:1px solid #ffcdd2;font-size:12px}
@@ -20,18 +20,21 @@ body{font-family:system-ui;background:#f5f5f5;line-height:2;color:#111}
 </head>
 <body>
 <div class="top">
-<img src="the4thpillarnews.jpg">
-<h1>The Fourth Pillar News</h1>
+<img src="the4thpillarnews.jpg" onerror="this.onerror=null; this.src='https://iili.io/FxLxV5J.png';">
+<h1>The Fourth Pillar News<b style="color:#f2c14e;font-size:11px;display:block">Sach Ka Chautha Stambh | Gaurav Sharma</b></h1>
 </div>
 <div id="list"><p style="text-align:center;padding:40px">खबर लाई जा रही है...</p></div>
 <div id="modal"><div id="mhead"><b>4th Pillar News</b><button onclick="modal.style.display='none'" style="background:#fff;color:#0b2047;border:0;padding:6px 14px;border-radius:20px;font-weight:bold">बंद करें ✕</button></div><div id="mbody"></div></div>
 
 <script>
 let newsList=[];
+
 async function loadDirect(){
+let listEl=document.getElementById('list');
 try{
+// TRY 1: DIRECT SITE
 let proxy=`https://api.allorigins.win/get?url=${encodeURIComponent('https://www.bbc.com/hindi')}`;
-let res=await fetch(proxy);
+let res=await fetch(proxy,{signal:AbortSignal.timeout(6000)});
 let data=await res.json();
 let doc=new DOMParser().parseFromString(data.contents,'text/html');
 let links=[...doc.querySelectorAll('a[href*="/hindi/articles/"]')];
@@ -43,45 +46,64 @@ links.forEach(a=>{
    map.set(href,title);
  }
 });
-newsList=[...map.entries()].slice(0,15).map(([link,title])=>({link,title}));
+newsList=[...map.entries()].slice(0,15).map(([link,title])=>({link,title, type:'direct'}));
+if(newsList.length>0) throw 'success_direct'; // jump to render
+}catch(e){ console.log('direct fail, trying rss'); }
+
+try{
+// TRY 2: RSS BACKUP - TAAKI KHALI NA RAHE
+let r=await fetch('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent('https://feeds.bbci.co.uk/hindi/rss.xml'));
+let j=await r.json();
+newsList=j.items.slice(0,15).map(it=>({link:it.link, title:it.title, content:it.content, description:it.description, type:'rss'}));
+}catch(err){
+listEl.innerHTML='<p style="text-align:center;padding:40px">Network slow hai - Refresh karo</p>';
+return;
+}
+renderList();
+}
+
+function renderList(){
 let list=document.getElementById('list'); list.innerHTML='';
 newsList.forEach((it,i)=>{
  let d=document.createElement('div'); d.className='card';
  d.innerHTML=`<h2>${it.title}</h2><div class="meta"><span>लेखक: Gaurav Sharma</span></div><p style="color:#b71c1c;font-weight:bold;margin-top:8px">पूरी खबर पढ़ें →</p>`;
- d.onclick=()=>openDirect(i);
+ d.onclick=()=>openN(i);
  list.appendChild(d);
 });
-}catch(e){ document.getElementById('list').innerHTML=`<p style="text-align:center;padding:40px">Fail - Retry</p>`; }
 }
 
-async function openDirect(i){
+async function openN(i){
 let it=newsList[i];
 let body=document.getElementById('mbody');
 document.getElementById('modal').style.display='block';
 body.innerHTML=`<h1>${it.title}</h1><p>पूरा आर्टिकल लाया जा रहा है...</p>`;
+let paras=[];
 try{
 let proxy=`https://api.allorigins.win/get?url=${encodeURIComponent(it.link)}`;
 let res=await fetch(proxy);
 let data=await res.json();
 let doc=new DOMParser().parseFromString(data.contents,'text/html');
-let paras=[...doc.querySelectorAll('main p, article p, div[data-component="text-block"] p')].map(p=>p.innerText.trim()).filter(t=>t.length>50 &&!t.toLowerCase().includes('bbc') &&!t.includes('फॉलो'));
+paras=[...doc.querySelectorAll('main p, article p, div[data-component="text-block"] p')].map(p=>p.innerText.trim()).filter(t=>t.length>50 &&!t.toLowerCase().includes('bbc') &&!t.includes('फॉलो'));
 paras=[...new Set(paras)];
+}catch(e){
+// agar direct fail to rss content se
+if(it.content){
+let clean=it.content.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
+paras=clean.split('।').map(s=>s.trim()).filter(s=>s.length>40);
+}
+}
 
-// ===== TERA LOGIC YAHAN HAI =====
- // 1. RE-ARRANGE - Google ko lage naya hai - 1,0,2,4,3,5
+ // ===== TERA REARRANGE LOGIC =====
  let arranged = paras.length>=6? [paras[1],paras[0],paras[2],paras[4],paras[3],paras[5]] : paras;
- arranged = arranged.slice(0,6);
- // 2. HALKA RE-WRITE - Copy safe
- arranged = arranged.map(p=>p.replace('ने कहा','ने बताया').replace('के अनुसार','के मुताबिक').replace('बताया गया','जानकारी दी गई'));
-// ===============================
+ arranged = arranged.slice(0,6).map(p=>p.replace('ने कहा','ने बताया').replace('के अनुसार','के मुताबिक'));
+ // ===============================
 
 body.innerHTML=`
 <h1>${it.title}</h1>
 <div class="meta"><span>लेखक: Gaurav Sharma</span><span>4th Pillar News</span></div>
-${arranged.map(p=>`<p>${p}</p>`).join('')}
+${arranged.map(p=>`<p>${p}।</p>`).join('')}
 <br><p><b>रिपोर्ट: Gaurav Sharma, 4th Pillar News</b></p>
 `;
-}catch(err){ body.innerHTML=`<h1>${it.title}</h1><p>Load fail</p>`; }
 }
 loadDirect();
 </script>
