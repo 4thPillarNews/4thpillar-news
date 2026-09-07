@@ -12,7 +12,6 @@ body{font-family:system-ui;background:#f5f5f5;line-height:1.9;color:#111}
 .top h1{color:#fff;font-size:18px;line-height:1.1}
 .top h1 b{color:#f2c14e;font-size:11px;display:block;margin-top:3px}
 .card{background:#fff;margin:12px auto;padding:18px;border-radius:12px;max-width:800px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-.card h2{font-size:19px}
 .meta{font-size:12px;color:#666;margin:8px 0;display:flex;gap:8px;flex-wrap:wrap}
 .meta span{background:#fff3f3;color:#b71c1c;padding:3px 10px;border-radius:20px;border:1px solid #ffcdd2}
 .read{color:#b71c1c;font-weight:bold;cursor:pointer;margin-top:10px;display:inline-block}
@@ -44,38 +43,66 @@ list.appendChild(d);
 }
 
 function rewriteSafe(t){
-let map={"ने कहा":"ने बताया","कहा कि":"बताया कि","जानकारी दी":"जानकारी साझा की","के अनुसार":"के मुताबिक","बताया गया":"सामने आया","मौजूद":"उपस्थित","शुरू किया":"शुरुआत की"};
-for(let k in map){ if(t.includes(k)){ return t.replace(k, map[k]); } }
+let m={"ने कहा":"ने बताया","कहा कि":"बताया कि","जानकारी दी":"जानकारी साझा की","के अनुसार":"के मुताबिक","बताया गया":"सामने आया","मौजूद":"उपस्थित"};
+for(let k in m){ if(t.includes(k)) return t.replace(k,m[k]); }
 return t;
+}
+
+function make6Para(text){
+let sents=text.replace(/<[^>]*>/g,'').split('।').map(s=>s.trim()).filter(s=>s.length>20);
+if(sents.length<6){
+ let words=text.replace(/<[^>]*>/g,'').split(' ');
+ let chunk=Math.ceil(words.length/6);
+ let p=[];
+ for(let k=0;k<6;k++){ let t=words.slice(k*chunk,(k+1)*chunk).join(' ').trim(); if(t) p.push(t); }
+ sents=p;
+}
+let arranged=sents.length>=6?[sents[1],sents[0],sents[2],sents[3],sents[4],sents[5]]:sents;
+return arranged.slice(0,6).map(p=>rewriteSafe(p));
 }
 
 async function openN(i){
 let it=all[i];
 document.getElementById('modal').style.display='block';
-document.getElementById('mbody').innerHTML=`<h1>${it.title}</h1><p style="text-align:center;padding:30px">पूरा लेख लाया जा रहा है...</p>`;
-try{
-let proxy='https://api.allorigins.win/get?url='+encodeURIComponent(it.link);
-let res=await fetch(proxy); let data=await res.json();
-let doc=new DOMParser().parseFromString(data.contents,'text/html');
-let raw=[...doc.querySelectorAll('main p, article p, div[data-component="text-block"] p, div[data-component="text-block"]')].map(p=>p.innerText.trim()).filter(t=>t.length>45 &&!t.toLowerCase().includes('bbc') &&!t.includes('लाइक') &&!t.includes('फॉलो'));
-raw=[...new Set(raw)];
-if(raw.length<4){
-let rss=(it.content||it.description).replace(/<[^>]*>/g,'').split('।').map(s=>s.trim()).filter(s=>s.length>20);
-raw=rss;
-}
-let arranged=[];
-if(raw.length>=6){ arranged=[raw[1], raw[0], raw[2], raw[4], raw[3], raw[5]]; }
-else{ arranged=raw; }
-let finalParas=arranged.slice(0,6).map(p=> rewriteSafe(p) );
+
+// STEP 1: TURANT DIKHAO - KHABAR GAYAB NAHI HOGI
+let instant=make6Para(it.content+" "+it.description);
 document.getElementById('mbody').innerHTML=`
 <h1>${it.title}</h1>
 <div class="meta"><span>लेखक: Gaurav Sharma</span><span>4th Pillar News</span></div>
-${finalParas.map(p=>`<p>${p}${p.endsWith('।')?'':'।'}</p>`).join('')}
+<p><b>क्या हुआ:</b> ${instant[0]||''}।</p>
+<p><b>कब हुआ:</b> ${instant[1]||''}।</p>
+<p><b>कैसे हुआ:</b> ${instant[2]||''}।</p>
+<p><b>क्यों हुआ:</b> ${instant[3]||''}।</p>
+<p>${instant[4]||''}।</p>
+<p>${instant[5]||''}।</p>
 <br><p><b>रिपोर्ट: Gaurav Sharma, 4th Pillar News</b></p>
 `;
-}catch(e){
-document.getElementById('mbody').innerHTML=`<h1>${it.title}</h1><p>${it.description.replace(/<[^>]*>/g,'')}</p>`;
+
+// STEP 2: BACKGROUND ME PURA ARTICLE TRY KARO - MILE TO UPDATE
+try{
+let proxy='https://api.allorigins.win/get?url='+encodeURIComponent(it.link);
+let res=await Promise.race([fetch(proxy), new Promise((_,r)=>setTimeout(()=>r('timeout'),3500))]);
+if(!res.json) throw 'timeout';
+let data=await res.json();
+let doc=new DOMParser().parseFromString(data.contents,'text/html');
+let raw=[...doc.querySelectorAll('main p, article p, div[data-component="text-block"]')].map(p=>p.innerText.trim()).filter(t=>t.length>45 &&!t.includes('BBC'));
+raw=[...new Set(raw)];
+if(raw.length>=4){
+ let arranged=[raw[1],raw[0],raw[2],raw[3],raw[4],raw[5]].slice(0,6).map(p=>rewriteSafe(p));
+ document.getElementById('mbody').innerHTML=`
+ <h1>${it.title}</h1>
+ <div class="meta"><span>लेखक: Gaurav Sharma</span><span>Full Article Verified</span></div>
+ <p><b>क्या हुआ:</b> ${arranged[0]||''}</p>
+ <p><b>कब हुआ:</b> ${arranged[1]||''}</p>
+ <p><b>कैसे हुआ:</b> ${arranged[2]||''}</p>
+ <p><b>क्यों हुआ:</b> ${arranged[3]||''}</p>
+ <p>${arranged[4]||''}</p>
+ <p>${arranged[5]||''}</p>
+ <br><p><b>रिपोर्ट: Gaurav Sharma, 4th Pillar News</b></p>
+ `;
 }
+}catch(e){}
 }
 load();
 </script>
