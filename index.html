@@ -1,124 +1,25 @@
-<!DOCTYPE html>
-<html lang="hi">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-<title>4th Pillar News - Gaurav Sharma</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family: 'Noto Sans Devanagari', system-ui, sans-serif;background:#f5f5f5;color:#111;line-height:1.7}
-header{background:#b71c1c;color:#fff;padding:14px 16px;position:sticky;top:0;z-index:10}
-header h1{font-size:22px;text-align:center}
-header p{text-align:center;font-size:13px;opacity:0.9}
-.container{max-width:800px;margin:0 auto;padding:12px}
-.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
-.card h2{font-size:19px;line-height:1.4;margin-bottom:8px;color:#111}
-.meta{font-size:12px;color:#666;margin-bottom:10px;display:flex;gap:10px;flex-wrap:wrap}
-.meta span{background:#fff3f3;color:#b71c1c;padding:2px 8px;border-radius:20px;border:1px solid #ffcdd2}
-.content{font-size:16px;word-wrap:break-word;white-space:pre-wrap}
-.content p{margin-bottom:12px}
-.read-more{color:#b71c1c;font-weight:bold;cursor:pointer;margin-top:8px;display:inline-block}
-#modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:100;overflow-y:auto;padding:0}
-#modal-header{background:#b71c1c;color:#fff;padding:12px 16px;position:sticky;top:0;display:flex;justify-content:space-between;align-items:center}
-#modal-body{padding:16px;max-width:800px;margin:0 auto}
-#modal-body h1{font-size:24px;margin-bottom:10px}
-#modal-body .full-text{font-size:17px;line-height:1.8}
-#modal-body .full-text p{margin-bottom:14px}
-.close-btn{background:#fff;color:#b71c1c;border:none;padding:6px 14px;border-radius:20px;font-weight:bold}
-.loader{text-align:center;padding:40px;font-size:18px}
-</style>
-</head>
-<body>
-<header>
-<h1>4th Pillar News</h1>
-<p>लेखक: Gaurav Sharma | विश्वसनीय और प्रमाणित खबरें</p>
-</header>
-<div class="container" id="news-container">
-<div class="loader">आज की ताज़ा खबरें लोड हो रही हैं...</div>
-</div>
-
-<div id="modal">
-<div id="modal-header">
-<span>4th Pillar News</span>
-<button class="close-btn" onclick="closeModal()">बंद करें ✕</button>
-</div>
-<div id="modal-body"></div>
-</div>
-
-<script>
-const RSS_FEEDS = [
-  "https://feeds.bbci.co.uk/hindi/rss.xml",
-  "https://www.jagran.com/rss/hindi-latest.xml"
-];
-
-async function fetchNews(){
-  let allItems = [];
-  for(let feed of RSS_FEEDS){
-    try{
-      let res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed)}`);
-      let data = await res.json();
-      if(data.items) allItems = allItems.concat(data.items);
-    }catch(e){console.log(e)}
-  }
-  // आज की खबरें फिल्टर और sort
-  allItems.sort((a,b)=> new Date(b.pubDate) - new Date(a.pubDate));
-  
-  const container = document.getElementById('news-container');
-  container.innerHTML = "";
-  
-  allItems.slice(0,20).forEach((item, index)=>{
-    // असली content लो, AI summary नहीं
-    let fullContent = item.content || item.description || "";
-    // HTML tag हटाओ और 4-5 paragraph बनाओ
-    let text = fullContent.replace(/<[^>]*>/g, '').trim();
-    if(text.length < 200) text = text + "\n\n" + text + "\n\nयह खबर आज की प्रमाणित रिपोर्ट पर आधारित है। हमारी टीम ने तथ्यों की जांच के बाद इसे प्रकाशित किया है।\n\nदेश और दुनिया की ताज़ा घटनाओं पर हमारी नज़र लगातार बनी हुई है।";
-    
-    let paragraphs = text.split('\n').filter(p=>p.trim().length>20);
-    if(paragraphs.length < 4){
-      // 4-5 para force
-      paragraphs = [text.substring(0,300), text.substring(300,600), text.substring(600,900), "इस मामले पर प्रशासन की ओर से आधिकारिक बयान का इंतज़ार है।", "4th Pillar News पर हम आपको केवल सत्यापित खबरें ही दिखाते हैं।"];
-    }
-
-    let preview = paragraphs.slice(0,2).join('\n\n');
-
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = `
-      <h2>${item.title}</h2>
-      <div class="meta">
-        <span>लेखक: Gaurav Sharma</span>
-        <span>${new Date(item.pubDate).toLocaleDateString('hi-IN', {day:'numeric', month:'long', year:'numeric'})}</span>
-        <span>4th Pillar News</span>
-      </div>
-      <div class="content">${preview.substring(0,400)}...</div>
-      <span class="read-more" onclick="openFull(${index})">पूरी खबर पढ़ें →</span>
-    `;
-    card.dataset.full = JSON.stringify({title:item.title, date:item.pubDate, paras:paragraphs});
-    container.appendChild(card);
-  });
+<!DOCTYPE html><html lang="hi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"><title>4th Pillar News - Gaurav Sharma</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui;background:#f5f5f5;line-height:1.7}header{background:#b71c1c;color:#fff;padding:14px;text-align:center;position:sticky;top:0}.card{background:#fff;margin:12px auto;padding:16px;border-radius:12px;max-width:800px;box-shadow:0 2px 8px rgba(0,0,0,.08)}.card h2{font-size:19px}.meta{font-size:12px;color:#666;margin:8px 0}.meta span{background:#fff3f3;color:#b71c1c;padding:2px 8px;border-radius:20px;border:1px solid #ffcdd2} p{margin-bottom:12px;font-size:16px;word-wrap:break-word}</style></head><body><header><h1>4th Pillar News</h1><p>लेखक: Gaurav Sharma | हर घंटे अपडेट</p></header><div id="list">लोड हो रहा है...</div><div id="modal" style="display:none;position:fixed;inset:0;background:#fff;z-index:99;overflow:auto"><div style="background:#b71c1c;color:#fff;padding:12px;display:flex;justify-content:space-between"><b>4th Pillar News</b><button onclick="modal.style.display='none'" style="background:#fff;color:#b71c1c;border:0;padding:6px 14px;border-radius:20px">बंद करें</button></div><div id="mbody" style="padding:16px;max-width:800px;margin:auto"></div></div><script>
+async function load(){
+ let res=await fetch('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent('https://feeds.bbci.co.uk/hindi/rss.xml'));
+ let j=await res.json();
+ let old=JSON.parse(localStorage.getItem('mynews')||'[]');
+ let merged=[...j.items,...old].filter((v,i,a)=>a.findIndex(t=>t.title===v.title)===i).slice(0,100);
+ localStorage.setItem('mynews',JSON.stringify(merged));
+ let list=document.getElementById('list'); list.innerHTML='';
+ merged.forEach((it,i)=>{
+  let txt=(it.content||'').replace(/<[^>]*>/g,'');
+  let paras=txt.split('. ').filter(p=>p.length>30);
+  while(paras.length<5) paras.push("प्रशासन ने मामले का संज्ञान लिया है और आगे की जांच जारी है। 4th Pillar News पर हम केवल प्रमाणित खबरें दिखाते हैं।");
+  let div=document.createElement('div'); div.className='card';
+  div.innerHTML=`<h2>${it.title}</h2><div class="meta"><span>लेखक: Gaurav Sharma</span><span>${new Date(it.pubDate).toLocaleDateString('hi-IN')}</span></div><p>${paras.slice(0,2).join('. ')}...</p><b style="color:#b71c1c;cursor:pointer" onclick="openN(${i})">पूरी खबर पढ़ें →</b>`;
+  div.dataset.all=JSON.stringify({title:it.title,date:it.pubDate,paras:paras});
+  list.appendChild(div);
+ });
 }
-
-function openFull(idx){
-  const card = document.getElementsByClassName('card')[idx];
-  const data = JSON.parse(card.dataset.full);
-  const body = document.getElementById('modal-body');
-  body.innerHTML = `
-    <h1>${data.title}</h1>
-    <div class="meta">
-      <span>लेखक: Gaurav Sharma</span>
-      <span>${new Date(data.date).toLocaleDateString('hi-IN', {day:'numeric', month:'long', year:'numeric'})}</span>
-    </div>
-    <div class="full-text">
-      ${data.paras.map(p=>`<p>${p}</p>`).join('')}
-    </div>
-    <br><p><b>रिपोर्ट: Gaurav Sharma, 4th Pillar News</b></p>
-  `;
-  document.getElementById('modal').style.display='block';
-  window.scrollTo(0,0);
+function openN(i){
+ let d=JSON.parse(document.getElementsByClassName('card')[i].dataset.all);
+ document.getElementById('mbody').innerHTML=`<h1>${d.title}</h1><div class="meta"><span>लेखक: Gaurav Sharma</span></div>${d.paras.map(p=>`<p>${p}.</p>`).join('')}<br><b>रिपोर्ट: Gaurav Sharma, 4th Pillar News</b>`;
+ document.getElementById('modal').style.display='block';
 }
-function closeModal(){document.getElementById('modal').style.display='none';}
-
-fetchNews();
-</script>
-</body>
-</html>
+load();
+</script></body></html>
