@@ -2,7 +2,7 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>4th Pillar News - Gaurav Sharma</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -10,7 +10,7 @@ body{font-family:system-ui;background:#f5f5f5;line-height:1.9;color:#111}
 .top{background:#0b2047;display:flex;align-items:center;padding:10px 14px;gap:12px;position:sticky;top:0;z-index:10}
 .top img{width:52px;height:52px;border-radius:10px;background:#fff;object-fit:cover}
 .top h1{color:#fff;font-size:18px;line-height:1.1}
-.top h1 b{color:#f2c14e;font-size:11px;font-weight:400;display:block;margin-top:3px}
+.top h1 b{color:#f2c14e;font-size:11px;display:block;margin-top:3px}
 .card{background:#fff;margin:12px auto;padding:18px;border-radius:12px;max-width:800px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
 .card h2{font-size:19px}
 .meta{font-size:12px;color:#666;margin:8px 0;display:flex;gap:8px;flex-wrap:wrap}
@@ -19,87 +19,63 @@ body{font-family:system-ui;background:#f5f5f5;line-height:1.9;color:#111}
 #modal{display:none;position:fixed;inset:0;background:#fff;z-index:100;overflow:auto}
 #mhead{background:#0b2047;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;position:sticky;top:0}
 #mbody{padding:20px;max-width:800px;margin:auto}
-#mbody h1{font-size:24px;margin-bottom:14px;line-height:1.3}
-#mbody p{margin-bottom:16px;font-size:17px}
-.src{font-size:11px;color:#888;margin-top:20px;border-top:1px solid #eee;padding-top:10px}
+#mbody p{margin-bottom:16px;font-size:17px;text-align:justify}
 </style>
 </head>
 <body>
 <div class="top">
 <img src="the4thpillarnews.jpg" onerror="this.src='https://iili.io/FxLxV5J.png'">
-<h1>The Fourth Pillar News<b>• Sach Ka Chautha Stambh | Gaurav Sharma</b></h1>
+<h1>The Fourth Pillar News<b>Sach Ka Chautha Stambh | Gaurav Sharma</b></h1>
 </div>
-<div id="list"><p style="text-align:center;padding:40px">3 जगह से खबर वेरीफाई हो रही है...</p></div>
+<div id="list"><p style="text-align:center;padding:40px">लोड हो रहा है...</p></div>
 <div id="modal"><div id="mhead"><b>4th Pillar News</b><button onclick="modal.style.display='none'" style="background:#fff;color:#0b2047;border:0;padding:6px 14px;border-radius:20px;font-weight:bold">बंद करें ✕</button></div><div id="mbody"></div></div>
 
 <script>
-let allMain=[], allExtra=[];
-const FEEDS = [
-  'https://feeds.bbci.co.uk/hindi/rss.xml',
-  'https://feeds.feedburner.com/ndtvkhabar-latest',
-  'https://www.amarujala.com/rss/national-news.xml'
-];
-
-async function fetchFeed(url){
-  try{
-    let r=await fetch('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(url));
-    let j=await r.json(); return j.items||[];
-  }catch(e){return []}
-}
-
+let all=[];
 async function load(){
-  let results = await Promise.all(FEEDS.map(fetchFeed));
-  allMain = results[0];
-  allExtra = [...results[1],...results[2],...results[0]];
-
-  let list=document.getElementById('list'); list.innerHTML='';
-  allMain.forEach((it,i)=>{
-    let txt=it.description.replace(/<[^>]*>/g,'').substring(0,180);
-    let d=document.createElement('div'); d.className='card';
-    d.innerHTML=`<h2>${it.title}</h2><div class="meta"><span>लेखक: Gaurav Sharma</span><span>${new Date(it.pubDate).toLocaleDateString('hi-IN')}</span><span>3 Source Verified</span></div><p>${txt}...</p><span class="read" onclick="openN(${i})">पूरी खबर पढ़ें →</span>`;
-    list.appendChild(d);
-  });
+let r=await fetch('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent('https://feeds.bbci.co.uk/hindi/rss.xml'));
+let j=await r.json(); all=j.items;
+let list=document.getElementById('list'); list.innerHTML='';
+all.forEach((it,i)=>{
+let d=document.createElement('div'); d.className='card';
+d.innerHTML=`<h2>${it.title}</h2><div class="meta"><span>लेखक: Gaurav Sharma</span><span>${new Date(it.pubDate).toLocaleDateString('hi-IN')}</span></div><p>${it.description.replace(/<[^>]*>/g,'').substring(0,180)}...</p><span class="read" onclick="openN(${i})">पूरी खबर पढ़ें →</span>`;
+list.appendChild(d);
+});
 }
 
-function rewrite(t){
- let m={"ने कहा":"ने बताया","कहा कि":"बताया कि","जानकारी दी":"जानकारी साझा की","मंजूरी दी":"हरी झंडी दी","शुरू किया":"शुरुआत की","के अनुसार":"के मुताबिक"};
- for(let k in m){ t=t.split(k).join(m[k]); } return t;
+function rewriteSafe(t){
+let map={"ने कहा":"ने बताया","कहा कि":"बताया कि","जानकारी दी":"जानकारी साझा की","के अनुसार":"के मुताबिक","बताया गया":"सामने आया","मौजूद":"उपस्थित","शुरू किया":"शुरुआत की"};
+for(let k in map){ if(t.includes(k)){ return t.replace(k, map[k]); } }
+return t;
 }
 
-function openN(i){
-  let main = allMain[i];
-  let title = main.title;
-  // Title ke keywords nikal ke dusri jagah se same khabar dhoondo
-  let keywords = title.split(' ').slice(0,3).join(' ').toLowerCase();
-  let related = allExtra.filter(x=> x.title.toLowerCase().includes(keywords.split(' ')[0]) || x.title.toLowerCase().includes(keywords.split(' ')[1]) ).slice(0,2);
-
-  // 3 jagah ka content jodo - ye tera verification hai
-  let combinedText = (main.content||'') + " " + (main.description||'');
-  related.forEach(r=>{ combinedText += " " + (r.description||'').replace(/<[^>]*>/g,''); });
-
-  combinedText = combinedText.replace(/BBC|NDTV|Amar Ujala|बीबीसी|जागरण/gi,'').replace(/<[^>]*>/g,'');
-  let sents = combinedText.split(/।/).map(s=>s.trim()).filter(s=>s.length>25);
-  // Unique sentences lo
-  let unique = [...new Set(sents)];
-
-  // Re-Arrange: 2nd source ka pehle, 1st ka beech me, 3rd ka last me
-  let arranged = [];
-  if(unique.length>=6){
-    arranged = [unique[1], unique[0], unique[2], unique[3], unique[4], unique[5]];
-  } else {
-    arranged = unique;
-  }
-  // Rewrite - shabd badlo par fact wahi
-  let paras = arranged.slice(0,6).map(s=>{ let r=rewrite(s); return r.endsWith('।')?r:r+'।'; });
-
-  document.getElementById('mbody').innerHTML=`
-  <h1>${title}</h1>
-  <div class="meta"><span>लेखक: Gaurav Sharma</span><span>4th Pillar News</span><span>Verified: 3 Sources</span></div>
-  ${paras.map(p=>`<p>${p}</p>`).join('')}
-  <br><p><b>रिपोर्ट: Gaurav Sharma, 4th Pillar News</b></p>
-  <div class="src">Note: यह खबर BBC Hindi, NDTV Khabar और Amar Ujala - 3 जगह से क्रॉस-वेरीफाई करके Re-Arrange + Rewrite की गई है।</div>
-  `;
-  document.getElementById('modal').style.display='block';
+async function openN(i){
+let it=all[i];
+document.getElementById('modal').style.display='block';
+document.getElementById('mbody').innerHTML=`<h1>${it.title}</h1><p style="text-align:center;padding:30px">पूरा लेख लाया जा रहा है...</p>`;
+try{
+let proxy='https://api.allorigins.win/get?url='+encodeURIComponent(it.link);
+let res=await fetch(proxy); let data=await res.json();
+let doc=new DOMParser().parseFromString(data.contents,'text/html');
+let raw=[...doc.querySelectorAll('main p, article p, div[data-component="text-block"] p, div[data-component="text-block"]')].map(p=>p.innerText.trim()).filter(t=>t.length>45 &&!t.toLowerCase().includes('bbc') &&!t.includes('लाइक') &&!t.includes('फॉलो'));
+raw=[...new Set(raw)];
+if(raw.length<4){
+let rss=(it.content||it.description).replace(/<[^>]*>/g,'').split('।').map(s=>s.trim()).filter(s=>s.length>20);
+raw=rss;
+}
+let arranged=[];
+if(raw.length>=6){ arranged=[raw[1], raw[0], raw[2], raw[4], raw[3], raw[5]]; }
+else{ arranged=raw; }
+let finalParas=arranged.slice(0,6).map(p=> rewriteSafe(p) );
+document.getElementById('mbody').innerHTML=`
+<h1>${it.title}</h1>
+<div class="meta"><span>लेखक: Gaurav Sharma</span><span>4th Pillar News</span></div>
+${finalParas.map(p=>`<p>${p}${p.endsWith('।')?'':'।'}</p>`).join('')}
+<br><p><b>रिपोर्ट: Gaurav Sharma, 4th Pillar News</b></p>
+`;
+}catch(e){
+document.getElementById('mbody').innerHTML=`<h1>${it.title}</h1><p>${it.description.replace(/<[^>]*>/g,'')}</p>`;
+}
 }
 load();
 </script>
