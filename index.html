@@ -1,41 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="hi">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>News Detail</title>
-<style>body{font-family:sans-serif;padding:15px;line-height:1.6;max-width:700px;margin:auto} img{width:100%;border-radius:10px} h1{font-size:24px}</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4th Pillar News</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui;background:#f5f5f5;line-height:1.9;color:#111}
+.top{background:#0b2047;display:flex;align-items:center;padding:10px 14px;gap:12px;position:sticky;top:0;z-index:10}
+.top img{width:52px;height:52px;border-radius:10px;background:#fff;object-fit:cover}
+.top h1{color:#fff;font-size:18px}.top h1 b{color:#f2c14e;font-size:11px;display:block}
+.card{background:#fff;margin:12px auto;padding:18px;border-radius:12px;max-width:800px;box-shadow:0 2px 8px rgba(0,0,0,.08);cursor:pointer}
+.meta span{background:#fff3f3;color:#b71c1c;padding:3px 10px;border-radius:20px;border:1px solid #ffcdd2;font-size:12px;margin-right:5px}
+.logo{width:52px;height:52px;background:#f2c14e;color:#0b2047;display:flex;align-items:center;justify-content:center;font-weight:900;border-radius:10px;font-size:22px}
+#mbody p{margin-bottom:16px;font-size:17px;text-align:justify}
+</style>
 </head>
 <body>
-<a href="index.html" style="text-decoration:none">← Back to Home</a>
-<div id="detail">Loading news...</div>
+<div class="top"><div class="logo">4P</div><h1>The Fourth Pillar News<b>Sach Ka Chautha Stambh | Gaurav Sharma</b></h1></div>
+<div id="list"><p style="text-align:center;padding:40px">लोड हो रहा है...</p></div>
 
 <script>
-async function loadNews(){
-  let params = new URLSearchParams(window.location.search);
-  let id = params.get('id');
-  console.log("ID:", id);
-  
-  // GitHub pages pe cache issue isliye ?v=Date
-  let res = await fetch('news.json?v=' + Date.now());
-  let allNews = await res.json();
-  
-  let n = allNews.find(x => String(x.id) === String(id));
-  
-  if(!n){
-    document.getElementById('detail').innerHTML = "News nahi mili. ID: " + id + "<br>news.json check kar.";
-    return;
-  }
-  
-  document.getElementById('detail').innerHTML = `
-    <h1>${n.title}</h1>
-    <small>By ${n.author || '4th Pillar News'} | ${n.time || ''}</small>
-    <br><br>
-    <img src="${n.img}" onerror="this.src='https://via.placeholder.com/600'">
-    <p style="font-size:18px;white-space:pre-wrap;">${n.content || n.description || 'Content khali hai, fetch-news.js me content ka field check kar.'}</p>
-  `;
+let all=[];
+async function load(){
+try{
+let proxy=`https://api.allorigins.win/get?url=${encodeURIComponent('https://feeds.bbci.co.uk/hindi/rss.xml')}`;
+let res=await fetch(proxy); let data=await res.json();
+let doc=new DOMParser().parseFromString(data.contents,'text/xml');
+let items=[...doc.querySelectorAll('item')];
+all=items.slice(0,15).map(it=>({title:it.querySelector('title').textContent,link:it.querySelector('link').textContent,content:(it.querySelector('description')?.textContent||'').replace(/<[^>]*>/g,'')}));
+}catch(e){
+all=[{title:"बिहार में बाढ़ से हालात खराब",link:"#",content:"बिहार में लगातार बारिश से बाढ़ के हालात बने हुए हैं। प्रशासन ने राहत कार्य तेज कर दिया है। लोगों को सुरक्षित स्थानों पर पहुंचाया जा रहा है।"}];
 }
-loadNews();
+render();
+}
+
+function rewrite(t){
+let m={"ने कहा":"ने बताया","कहा कि":"बताया कि","के अनुसार":"के मुताबिक","हुआ है":"हो चुका है"};
+for(let k in m){ t=t.split(k).join(m[k]); } return t.replace(/BBC/gi,'');
+}
+
+function render(){
+let list=document.getElementById('list'); list.innerHTML='';
+all.forEach((it,i)=>{
+let d=document.createElement('div'); d.className='card';
+d.innerHTML=`<h2>${it.title}</h2><div class="meta"><span>लेखक: Gaurav Sharma</span><span>4th Pillar News</span></div><p style="color:#b71c1c;font-weight:bold;margin-top:8px">पूरी खबर पढ़ें →</p>`;
+d.onclick=()=>{ localStorage.setItem('4p_news_'+i, JSON.stringify(it)); location.href='news.html?id='+i; };
+list.appendChild(d);
+});
+}
+load();
 </script>
 </body>
 </html>
