@@ -4,37 +4,82 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Fourth Pillar News</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box} body{font-family:system-ui;background:#f6f7f9;color:#111;padding-bottom:80px}
-.header{background:#0b2047;color:#fff;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20}
-.h-left{display:flex;align-items:center;gap:10px}.h-logo{width:44px;height:44px;background:#f2c14e;color:#0b2047;font-weight:900;display:flex;align-items:center;justify-content:center;border-radius:8px}
-.h-title{font-size:16px;font-weight:700}.h-title b{color:#f2c14e;font-size:10px;display:block}
-.section{display:flex;justify-content:space-between;padding:16px;max-width:800px;margin:auto}.section h2{font-size:20px}
-.card{background:#fff;margin:12px auto;border-radius:16px;overflow:hidden;max-width:760px;box-shadow:0 4px 12px rgba(0,0,0,.06)}
-.card-img{position:relative;height:200px}.card-img img{width:100%;height:100%;object-fit:cover}
-.tag{position:absolute;top:10px;left:10px;padding:4px 10px;border-radius:20px;color:#fff;font-size:11px;font-weight:700}
-.tag.raj{background:#1e3a8a}.tag.khel{background:#d97706}.tag.tech{background:#0e7490}
-.card-body{padding:14px}.card-body h3{font-size:17px;line-height:1.3;margin-bottom:6px}.card-body p{font-size:13px;color:#444;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+*{margin:0;padding:0;box-sizing:border-box} body{font-family:system-ui;background:#f6f7f9;padding-bottom:70px}
+.header{background:#0b2047;color:#fff;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:20}
+.h-left{display:flex;gap:10px;align-items:center}.logo{width:42px;height:42px;background:#f2c14e;color:#0b2047;font-weight:900;display:flex;align-items:center;justify-content:center;border-radius:8px}
+.icon{cursor:pointer;font-size:18px;margin-left:14px}
+#searchBox{display:none;padding:10px;background:#fff;border-bottom:1px solid #ddd;position:sticky;top:56px;z-index:15}
+#searchBox input{width:100%;padding:10px;border:1px solid #ccc;border-radius:20px}
+.card{background:#fff;margin:12px auto;border-radius:16px;overflow:hidden;max-width:760px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.card-img{height:190px;position:relative}.card-img img{width:100%;height:100%;object-fit:cover}
+.tag{position:absolute;top:10px;left:10px;background:#1e3a8a;color:#fff;padding:3px 10px;border-radius:20px;font-size:11px}
+.card-body{padding:12px}.card-body h3{font-size:16px}.card-body p{font-size:13px;color:#555;margin-top:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .foot{display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:#777}
-.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #ddd;display:flex;justify-content:space-around;padding:8px 0}
-.b-item{text-align:center;font-size:10px;color:#666}.b-item.active{color:#0b2047;font-weight:700}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:8px 0;border-top:1px solid #ddd;z-index:20}
+.b-item{cursor:pointer;text-align:center;font-size:10px;color:#666}.b-item.active{color:#0b2047;font-weight:700}
+.toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:8px 14px;border-radius:20px;font-size:13px;display:none;z-index:50}
 </style>
 </head>
 <body>
-<div class="header"><div class="h-left"><div class="h-logo">4P</div><div class="h-title">The Fourth Pillar News<b>Sach Ka Chautha Stambh | Gaurav Sharma</b></div></div><div>🔍 🔔 ☰</div></div>
-<div class="section"><h2>आज की मुख्य खबरें</h2><a href="#" style="color:#0b5fff;text-decoration:none;font-size:13px">सभी देखें ></a></div>
-<div id="list"></div>
-<div class="bottom"><div class="b-item active">🏠<br>होम</div><div class="b-item">📰<br>न्यूज़</div><div class="b-item">▶️<br>वीडियो</div><div class="b-item">🔖<br>सेव्ड</div><div class="b-item">👤<br>प्रोफ़ाइल</div></div>
+<div class="header">
+<div class="h-left"><div class="logo">4P</div><div><b style="font-size:14px">The Fourth Pillar News</b><div style="font-size:9px;color:#f2c14e">Gaurav Sharma</div></div></div>
+<div><span class="icon" onclick="toggleSearch()">🔍</span><span class="icon" onclick="showToast('कोई नया नोटिफिकेशन नहीं है')">🔔</span><span class="icon" onclick="showToast('About: Sach Ka Chautha Stambh - Gaurav Sharma')">☰</span></div>
+</div>
+
+<div id="searchBox"><input id="sInput" placeholder="खबर सर्च करें..." oninput="filterNews(this.value)"></div>
+<div id="pageTitle" style="max-width:800px;margin:auto;padding:12px 16px;font-weight:700">आज की मुख्य खबरें • Live</div>
+<div id="list" style="text-align:center;padding:20px">लोड हो रहा है...</div>
+<div id="savedPage" style="display:none;max-width:760px;margin:auto;padding:20px"></div>
+
+<div class="toast" id="toast"></div>
+
+<div class="bottom">
+<div class="b-item active" id="b-home" onclick="goHome()">🏠<br>होम</div>
+<div class="b-item" onclick="showToast('सभी न्यूज़ होम पर ही हैं')">📰<br>न्यूज़</div>
+<div class="b-item" onclick="showToast('वीडियो सेक्शन जल्द आएगा')">▶️<br>वीडियो</div>
+<div class="b-item" id="b-saved" onclick="openSaved()">🔖<br>सेव्ड</div>
+<div class="b-item" onclick="showToast('Profile: Gaurav Sharma - Editor')">👤<br>प्रोफ़ाइल</div>
+</div>
+
 <script>
-let all=[
-{title:"महाराष्ट्र में नई कृषि योजना को मिली मंजूरी, किसानों को मिलेगा सीधा लाभ",content:"महाराष्ट्र सरकार ने छोटे और सीमांत किसानों को आर्थिक सहायता देने के लिए नई कृषि योजना को मंजूरी दी है। इस योजना के तहत पात्र किसानों को प्रति हेक्टेयर 10,000 रुपये की सहायता सीधे उनके बैंक खाते में स्थानांतरित की जाएगी। कृषि मंत्री ने कहा कि इससे 45 लाख किसानों को लाभ होगा और उन्हें फसल लेने के लिए समन्वय विशेष क्रेडिट कार्ड के माध्यम से छूट और अतिरिक्त सहायता भी उपलब्ध कराई जाएगी। योजना अगले महीने से राज्यभर में लागू हो जाएगी।",img:"https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800",cat:"राजनीति"},
-{title:"T20 विश्व कप 2024: भारत ने सेमीफाइनल में बनाई जगह, बल्लेबाजों का शानदार प्रदर्शन",content:"T20 विश्व कप 2024 में भारत ने ऑस्ट्रेलिया को 24 रनों से हराकर सेमीफाइनल में जगह पक्की कर ली। मंगलवार को खेले गए मैच में भारत ने पहले बल्लेबाजी करते हुए 184 रन बनाए, जिसमें कप्तान ने 62 रन और युवा बल्लेबाज ने 48 रन की महत्वपूर्ण पारी खेली।",img:"https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=800",cat:"खेल"},
-{title:"भारत में 5G नेटवर्क का विस्तार, ग्रामीण क्षेत्रों में इंटरनेट पहुंच में हुआ इजाफा",content:"भारत में 5G नेटवर्क का विस्तार अब ग्रामीण इलाकों तक पहुंच चुका है। दूरसंचार विभाग के अनुसार देश के 500 से अधिक ग्रामीण जिलों में 5G कनेक्टिविटी शुरू हो गई है, जिससे किसानों, छात्रों और छोटे उद्यमियों को तेज इंटरनेट का लाभ मिल रहा है।",img:"https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800",cat:"टेक्नोलॉजी"}
-];
-document.getElementById('list').innerHTML=all.map((n,i)=>{
-let c=n.cat=='राजनीति'?'raj':n.cat=='खेल'?'khel':'tech';
-return `<div class="card" onclick="openN(${i})"><div class="card-img"><span class="tag ${c}">${n.cat}</span><img src="${n.img}"></div><div class="card-body"><h3>${n.title}</h3><p>${n.content}</p><div class="foot"><span>आज • 15 मिनट पहले • 3 मिनट पढ़ें</span><span>🔖</span></div></div></div>`;
+let all=[];
+let saved=JSON.parse(localStorage.getItem('4p_saved')||'[]');
+
+async function loadNews(){
+try{
+let r=await fetch('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent('https://feeds.bbci.co.uk/hindi/rss.xml'));
+let j=await r.json();
+all=j.items.slice(0,10).map(it=>({title:it.title,content:it.description.replace(/<[^>]*>/g,''),img:`https://picsum.photos/seed/${encodeURIComponent(it.title.slice(0,10))}/800/400`}));
+}catch(e){
+all=[{title:"आज की ताजा खबर: बिहार में प्रशासन अलर्ट पर",content:"लगातार बारिश के कारण कई जिलों में स्थिति पर नजर रखी जा रही है। प्रशासन ने राहत कार्य तेज कर दिया है।",img:"https://picsum.photos/seed/bihar/800/400"}];
+}
+localStorage.setItem('4p_all',JSON.stringify(all));
+render(all);
+}
+function render(arr){
+document.getElementById('list').style.display='block';
+document.getElementById('savedPage').style.display='none';
+document.getElementById('pageTitle').innerText='आज की मुख्य खबरें • Live';
+document.getElementById('list').innerHTML=arr.map((n,i)=>{
+let isSaved=saved.includes(n.title);
+return `<div class="card"><div class="card-img" onclick="openN(${all.indexOf(n)})"><span class="tag">ताजा</span><img src="${n.img}"></div><div class="card-body"><h3 onclick="openN(${all.indexOf(n)})">${n.title}</h3><p>${n.content.substring(0,120)}...</p><div class="foot"><span>आज</span><span onclick="toggleSave('${n.title.replace(/'/g,"")}')" style="cursor:pointer;font-size:14px">${isSaved?'🔖 Saved':'🔖 Save'}</span></div></div></div>`;
 }).join('');
-function openN(i){localStorage.setItem('4p_'+i,JSON.stringify(all[i])); location.href='news.html?id='+i;}
+}
+function openN(i){location.href='news.html?id='+i;}
+function toggleSearch(){let b=document.getElementById('searchBox');b.style.display=b.style.display=='block'?'none':'block';if(b.style.display=='block')document.getElementById('sInput').focus();}
+function filterNews(q){let f=all.filter(n=>n.title.toLowerCase().includes(q.toLowerCase()));render(f.length?f:all);}
+function showToast(msg){let t=document.getElementById('toast');t.innerText=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2000);}
+function toggleSave(title){if(saved.includes(title)){saved=saved.filter(s=>s!==title);}else{saved.push(title);}localStorage.setItem('4p_saved',JSON.stringify(saved));render(all);showToast(saved.includes(title)?'सेव्ड में जोड़ा गया':'सेव्ड से हटाया');}
+function openSaved(){
+document.getElementById('list').style.display='none';
+let sp=document.getElementById('savedPage');sp.style.display='block';
+document.getElementById('pageTitle').innerText='सेव्ड खबरें';
+document.querySelectorAll('.b-item').forEach(b=>b.classList.remove('active'));document.getElementById('b-saved').classList.add('active');
+let f=all.filter(n=>saved.includes(n.title));
+sp.innerHTML=f.length?f.map((n,i)=>`<div class="card" onclick="openN(${all.indexOf(n)})"><div class="card-body"><h3>${n.title}</h3></div></div>`).join(''):`<p>कोई सेव्ड खबर नहीं है।</p>`;
+}
+function goHome(){document.querySelectorAll('.b-item').forEach(b=>b.classList.remove('active'));document.getElementById('b-home').classList.add('active');render(all);}
+loadNews();
 </script>
 </body>
 </html>
