@@ -1,55 +1,40 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>4th Pillar News</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Fourth Pillar News</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui;background:#f5f5f5;line-height:1.9;color:#111}
-.top{background:#0b2047;display:flex;align-items:center;padding:10px 14px;gap:12px;position:sticky;top:0;z-index:10}
-.top img{width:52px;height:52px;border-radius:10px;background:#fff;object-fit:cover}
-.top h1{color:#fff;font-size:18px}.top h1 b{color:#f2c14e;font-size:11px;display:block}
-.card{background:#fff;margin:12px auto;padding:18px;border-radius:12px;max-width:800px;box-shadow:0 2px 8px rgba(0,0,0,.08);cursor:pointer}
-.meta span{background:#fff3f3;color:#b71c1c;padding:3px 10px;border-radius:20px;border:1px solid #ffcdd2;font-size:12px;margin-right:5px}
-.logo{width:52px;height:52px;background:#f2c14e;color:#0b2047;display:flex;align-items:center;justify-content:center;font-weight:900;border-radius:10px;font-size:22px}
-#mbody p{margin-bottom:16px;font-size:17px;text-align:justify}
+*{margin:0;padding:0;box-sizing:border-box} body{font-family:system-ui;background:#f6f7f9;color:#111;padding-bottom:80px}
+.header{background:#0b2047;color:#fff;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20}
+.h-left{display:flex;align-items:center;gap:10px}.h-logo{width:44px;height:44px;background:#f2c14e;color:#0b2047;font-weight:900;display:flex;align-items:center;justify-content:center;border-radius:8px}
+.h-title{font-size:16px;font-weight:700}.h-title b{color:#f2c14e;font-size:10px;display:block}
+.section{display:flex;justify-content:space-between;padding:16px;max-width:800px;margin:auto}.section h2{font-size:20px}
+.card{background:#fff;margin:12px auto;border-radius:16px;overflow:hidden;max-width:760px;box-shadow:0 4px 12px rgba(0,0,0,.06)}
+.card-img{position:relative;height:200px}.card-img img{width:100%;height:100%;object-fit:cover}
+.tag{position:absolute;top:10px;left:10px;padding:4px 10px;border-radius:20px;color:#fff;font-size:11px;font-weight:700}
+.tag.raj{background:#1e3a8a}.tag.khel{background:#d97706}.tag.tech{background:#0e7490}
+.card-body{padding:14px}.card-body h3{font-size:17px;line-height:1.3;margin-bottom:6px}.card-body p{font-size:13px;color:#444;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.foot{display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:#777}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #ddd;display:flex;justify-content:space-around;padding:8px 0}
+.b-item{text-align:center;font-size:10px;color:#666}.b-item.active{color:#0b2047;font-weight:700}
 </style>
 </head>
 <body>
-<div class="top"><div class="logo">4P</div><h1>The Fourth Pillar News<b>Sach Ka Chautha Stambh | Gaurav Sharma</b></h1></div>
-<div id="list"><p style="text-align:center;padding:40px">लोड हो रहा है...</p></div>
-
+<div class="header"><div class="h-left"><div class="h-logo">4P</div><div class="h-title">The Fourth Pillar News<b>Sach Ka Chautha Stambh | Gaurav Sharma</b></div></div><div>🔍 🔔 ☰</div></div>
+<div class="section"><h2>आज की मुख्य खबरें</h2><a href="#" style="color:#0b5fff;text-decoration:none;font-size:13px">सभी देखें ></a></div>
+<div id="list"></div>
+<div class="bottom"><div class="b-item active">🏠<br>होम</div><div class="b-item">📰<br>न्यूज़</div><div class="b-item">▶️<br>वीडियो</div><div class="b-item">🔖<br>सेव्ड</div><div class="b-item">👤<br>प्रोफ़ाइल</div></div>
 <script>
-let all=[];
-async function load(){
-try{
-let proxy=`https://api.allorigins.win/get?url=${encodeURIComponent('https://feeds.bbci.co.uk/hindi/rss.xml')}`;
-let res=await fetch(proxy); let data=await res.json();
-let doc=new DOMParser().parseFromString(data.contents,'text/xml');
-let items=[...doc.querySelectorAll('item')];
-all=items.slice(0,15).map(it=>({title:it.querySelector('title').textContent,link:it.querySelector('link').textContent,content:(it.querySelector('description')?.textContent||'').replace(/<[^>]*>/g,'')}));
-}catch(e){
-all=[{title:"बिहार में बाढ़ से हालात खराब",link:"#",content:"बिहार में लगातार बारिश से बाढ़ के हालात बने हुए हैं। प्रशासन ने राहत कार्य तेज कर दिया है। लोगों को सुरक्षित स्थानों पर पहुंचाया जा रहा है।"}];
-}
-render();
-}
-
-function rewrite(t){
-let m={"ने कहा":"ने बताया","कहा कि":"बताया कि","के अनुसार":"के मुताबिक","हुआ है":"हो चुका है"};
-for(let k in m){ t=t.split(k).join(m[k]); } return t.replace(/BBC/gi,'');
-}
-
-function render(){
-let list=document.getElementById('list'); list.innerHTML='';
-all.forEach((it,i)=>{
-let d=document.createElement('div'); d.className='card';
-d.innerHTML=`<h2>${it.title}</h2><div class="meta"><span>लेखक: Gaurav Sharma</span><span>4th Pillar News</span></div><p style="color:#b71c1c;font-weight:bold;margin-top:8px">पूरी खबर पढ़ें →</p>`;
-d.onclick=()=>{ localStorage.setItem('4p_news_'+i, JSON.stringify(it)); location.href='news.html?id='+i; };
-list.appendChild(d);
-});
-}
-load();
+let all=[
+{title:"महाराष्ट्र में नई कृषि योजना को मिली मंजूरी, किसानों को मिलेगा सीधा लाभ",content:"महाराष्ट्र सरकार ने छोटे और सीमांत किसानों को आर्थिक सहायता देने के लिए नई कृषि योजना को मंजूरी दी है। इस योजना के तहत पात्र किसानों को प्रति हेक्टेयर 10,000 रुपये की सहायता सीधे उनके बैंक खाते में स्थानांतरित की जाएगी। कृषि मंत्री ने कहा कि इससे 45 लाख किसानों को लाभ होगा और उन्हें फसल लेने के लिए समन्वय विशेष क्रेडिट कार्ड के माध्यम से छूट और अतिरिक्त सहायता भी उपलब्ध कराई जाएगी। योजना अगले महीने से राज्यभर में लागू हो जाएगी।",img:"https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800",cat:"राजनीति"},
+{title:"T20 विश्व कप 2024: भारत ने सेमीफाइनल में बनाई जगह, बल्लेबाजों का शानदार प्रदर्शन",content:"T20 विश्व कप 2024 में भारत ने ऑस्ट्रेलिया को 24 रनों से हराकर सेमीफाइनल में जगह पक्की कर ली। मंगलवार को खेले गए मैच में भारत ने पहले बल्लेबाजी करते हुए 184 रन बनाए, जिसमें कप्तान ने 62 रन और युवा बल्लेबाज ने 48 रन की महत्वपूर्ण पारी खेली।",img:"https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=800",cat:"खेल"},
+{title:"भारत में 5G नेटवर्क का विस्तार, ग्रामीण क्षेत्रों में इंटरनेट पहुंच में हुआ इजाफा",content:"भारत में 5G नेटवर्क का विस्तार अब ग्रामीण इलाकों तक पहुंच चुका है। दूरसंचार विभाग के अनुसार देश के 500 से अधिक ग्रामीण जिलों में 5G कनेक्टिविटी शुरू हो गई है, जिससे किसानों, छात्रों और छोटे उद्यमियों को तेज इंटरनेट का लाभ मिल रहा है।",img:"https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800",cat:"टेक्नोलॉजी"}
+];
+document.getElementById('list').innerHTML=all.map((n,i)=>{
+let c=n.cat=='राजनीति'?'raj':n.cat=='खेल'?'khel':'tech';
+return `<div class="card" onclick="openN(${i})"><div class="card-img"><span class="tag ${c}">${n.cat}</span><img src="${n.img}"></div><div class="card-body"><h3>${n.title}</h3><p>${n.content}</p><div class="foot"><span>आज • 15 मिनट पहले • 3 मिनट पढ़ें</span><span>🔖</span></div></div></div>`;
+}).join('');
+function openN(i){localStorage.setItem('4p_'+i,JSON.stringify(all[i])); location.href='news.html?id='+i;}
 </script>
 </body>
 </html>
