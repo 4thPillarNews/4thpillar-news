@@ -1,13 +1,45 @@
-<!DOCTYPE html><html lang="hi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>News Detail</title>
-<style>body{font-family:system-ui;max-width:800px;margin:auto;background:#fff;padding:0}.top{background:#0b2047;color:#fff;padding:12px} a{color:#fff;text-decoration:none}.content{padding:16px}.content h1{font-size:22px;line-height:1.3;margin-bottom:12px}.content img{width:100%;border-radius:12px;margin:12px 0}.content p{margin-bottom:16px;font-size:17px;text-align:justify;line-height:1.8}</style></head><body>
-<div class="top"><a href="index.html">← Back to Home</a></div><div id="detail" class="content">Loading...</div>
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>News</title>
+<style>
+body{font-family:system-ui;margin:0;background:#fff}
+.top{background:#0b2047;color:#fff;padding:12px;display:flex;align-items:center;gap:10px;position:sticky;top:0}
+.top a{color:#fff;text-decoration:none;font-size:22px}
+.wrap{max-width:760px;margin:auto;padding:16px}
+.wrap img{width:100%;height:220px;object-fit:cover;border-radius:12px;margin:12px 0}
+h1{font-size:20px;line-height:1.4;margin-top:10px}
+.meta{font-size:12px;color:#666;background:#f5f7f9;padding:8px 10px;border-radius:8px;margin:10px 0}
+p{font-size:16px;line-height:1.9;margin:14px 0;text-align:justify}
+</style>
+</head>
+<body>
+<div class="top"><a href="index.html">←</a> <b>The Fourth Pillar News</b></div>
+<div class="wrap" id="d">खबर लोड हो रही है...</div>
 <script>
-function rewrite(t){return t.replace(/ने कहा/g,'ने बताया').replace(/BBC/g,'');}
-let id=new URLSearchParams(location.search).get('id');
-let n=JSON.parse(localStorage.getItem('4p_'+id)||'null');
-if(!n){document.getElementById('detail').innerHTML='Home से दोबारा खोलें';}else{
-let paras=n.content.split('।').filter(s=>s.length>20);
-let arranged=paras.length>=6?[paras[1],paras[0],paras[2],paras[4],paras[3],paras[5]]:paras;
-document.getElementById('detail').innerHTML=`<h1>${n.title}</h1><small>By Gaurav Sharma • आज</small><img src="${n.img}">${arranged.map(p=>`<p>${rewrite(p)}।</p>`).join('')}<br><b>रिपोर्ट: Gaurav Sharma, 4th Pillar News</b>`;
+async function loadDetail(){
+  let id = new URLSearchParams(location.search).get('id');
+  if(id===null){document.getElementById('d').innerHTML='Home se kholo';return;}
+  try{
+    let r = await fetch('mynews.json?v='+Date.now());
+    let data = await r.json();
+    let n = data[Number(id)];
+    if(!n){document.getElementById('d').innerHTML='Khabar nahi mili';return;}
+    document.getElementById('d').innerHTML=`
+      <h1>${n.title}</h1>
+      <div class="meta">📅 ${n.dateStr} | ✍️ Gaurav Sharma</div>
+      <img src="${n.img}" onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c'">
+      <p>${n.content}</p>
+      <p>प्राप्त जानकारी के अनुसार, इस मामले में प्रशासन ने संज्ञान लिया है। स्थानीय सूत्रों के मुताबिक आने वाले समय में इस पर बड़ा अपडेट आ सकता है। The Fourth Pillar News की टीम हर अपडेट पर नजर बनाए हुए है।</p>
+      <p>इस खबर से जुड़ी हर छोटी-बड़ी जानकारी हम आप तक सबसे पहले पहुंचाते रहेंगे।</p>
+      <br><a href="index.html" style="background:#0b2047;color:#fff;padding:10px 18px;border-radius:20px;text-decoration:none">← सभी खबरें</a>
+    `;
+  }catch(e){
+    document.getElementById('d').innerHTML='mynews.json load nahi hui. Check karo file repo me hai ya nahi.<br>'+e;
+  }
 }
-</script></body></html>
+loadDetail();
+</script>
+</body>
+</html>
