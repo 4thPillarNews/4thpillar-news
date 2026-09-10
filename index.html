@@ -1,46 +1,38 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Fourth Pillar News</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box} body{font-family:system-ui;background:#f6f7f9;padding-bottom:70px}
-.header{background:#0b2047;color:#fff;padding:12px 14px;display:flex;justify-content:space-between;position:sticky;top:0;z-index:20}
-.h-left{display:flex;gap:10px;align-items:center}.logo{width:42px;height:42px;background:#f2c14e;color:#0b2047;font-weight:900;display:flex;align-items:center;justify-content:center;border-radius:8px}
-.icon{cursor:pointer;font-size:18px;margin-left:14px}
-#searchBox{display:none;padding:10px;background:#fff;position:sticky;top:56px;z-index:10}
-#searchBox input{width:100%;padding:10px;border-radius:20px;border:1px solid #ccc}
-.card{background:#fff;margin:12px auto;border-radius:16px;overflow:hidden;max-width:760px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui;background:#f6f7f9;padding-bottom:20px}
+.header{background:#0b2047;color:#fff;padding:12px 14px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:10}
+.logo{width:42px;height:42px;background:#f2c14e;color:#0b2047;font-weight:900;display:flex;align-items:center;justify-content:center;border-radius:8px}
+.card{background:#fff;margin:12px auto;border-radius:14px;overflow:hidden;max-width:760px;box-shadow:0 2px 8px rgba(0,0,0,.07);cursor:pointer}
 .card-img{height:190px;position:relative}.card-img img{width:100%;height:100%;object-fit:cover}
 .tag{position:absolute;top:10px;left:10px;background:#1e3a8a;color:#fff;padding:3px 10px;border-radius:20px;font-size:11px}
-.card-body{padding:12px}.card-body h3{font-size:16px}
-.foot{display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:#777}
-.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:8px 0;border-top:1px solid #ddd}
-.b-item{cursor:pointer;text-align:center;font-size:10px}.b-item.active{color:#0b2047;font-weight:700}
-.toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:8px 14px;border-radius:20px;display:none;z-index:99;font-size:13px}
+.card-body{padding:12px}.card-body h3{font-size:15.5px;line-height:1.4}
+.meta{font-size:11px;color:#888;margin-top:6px;display:flex;gap:10px}
 </style>
 </head>
 <body>
-<div class="header"><div class="h-left"><div class="logo">4P</div><div><b>The Fourth Pillar News</b><div style="font-size:9px;color:#f2c14e">Gaurav Sharma</div></div></div><div><span class="icon" onclick="toggleSearch()">🔍</span><span class="icon" onclick="toast('कोई नया नोटिफिकेशन नहीं')">🔔</span></div></div>
-<div id="searchBox"><input id="sInput" placeholder="Search..." oninput="filterNews(this.value)"></div>
-<div id="list" style="text-align:center;padding:30px">आज की खबरें ला रहा हूँ...</div>
-<div class="bottom"><div class="b-item active" onclick="location.reload()">🏠<br>होम</div><div class="b-item" onclick="toast('सेव्ड में जाओ')">🔖<br>सेव्ड</div><div class="b-item" onclick="toast('Profile: Gaurav Sharma')">👤<br>प्रोफ़ाइल</div></div>
-<div class="toast" id="toast"></div>
+<div class="header"><div class="logo">4P</div><div><b>The Fourth Pillar News</b><div style="font-size:10px;color:#f2c14e">Gaurav Sharma • Ghaziabad • Live</div></div></div>
+<div id="list" style="text-align:center;padding:40px">खबरें लोड हो रही हैं...</div>
 <script>
-let all=[],saved=JSON.parse(localStorage.getItem('4p_saved')||'[]');
 async function load(){
-let feeds=['https://feeds.bbci.co.uk/hindi/rss.xml','https://feeds.feedburner.com/ndtvkhabar-latest'];
-let tmp=[];
-for(let f of feeds){try{let r=await fetch('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(f));let j=await r.json();j.items.slice(0,5).forEach(it=>{tmp.push({title:it.title,content:it.description.replace(/<[^>]*>/g,''),img:`https://picsum.photos/seed/${encodeURIComponent(it.title.slice(0,8))}/800/400`});});}catch(e){}}
-all=tmp.length?tmp:[{title:"आज की बड़ी खबरें Live",content:"ताजा अपडेट के लिए रिफ्रेश करें",img:"https://picsum.photos/800/400"}];
-localStorage.setItem('4p_all',JSON.stringify(all));render(all);
+ let el=document.getElementById('list');
+ try{
+  let r=await fetch('./news.json?v='+Date.now());
+  let data=await r.json();
+  data.sort((a,b)=> (b.id||0)-(a.id||0));
+  localStorage.setItem('4p_all',JSON.stringify(data));
+  el.innerHTML=data.map((n,i)=>`
+   <div class="card" onclick="location.href='news.html?id=${n.id}'">
+    <div class="card-img"><span class="tag">${n.category||'ताजा'}</span><img src="${n.image||n.img||'https://picsum.photos/seed/4pillar/800/500'}" loading="lazy"></div>
+    <div class="card-body"><h3>${n.title}</h3><div class="meta"><span>📅 ${n.date||n.dateStr||''}</span><span>✍️ ${n.reporter||'Gaurav Sharma'}</span><span>📍 ${n.location||''}</span></div></div>
+   </div>`).join('');
+ }catch(e){ el.innerHTML='Error: news.json load nahi hui<br>'+e.message; }
 }
-function render(arr){document.getElementById('list').innerHTML=arr.map((n,i)=>`<div class="card"><div class="card-img" onclick="openN(${all.indexOf(n)})"><span class="tag">ताजा</span><img src="${n.img}"></div><div class="card-body"><h3 onclick="openN(${all.indexOf(n)})">${n.title}</h3><div class="foot"><span>आज</span><span onclick="saveT('${n.title.replace(/'/g,"")}')">${saved.includes(n.title)?'🔖 Saved':'🔖 Save'}</span></div></div></div>`).join('');}
-function openN(i){location.href='news.html?id='+i;}
-function toggleSearch(){let b=document.getElementById('searchBox');b.style.display=b.style.display=='block'?'none':'block';}
-function filterNews(q){render(all.filter(n=>n.title.toLowerCase().includes(q.toLowerCase())));}
-function saveT(t){if(saved.includes(t))saved=saved.filter(s=>s!==t);else saved.push(t);localStorage.setItem('4p_saved',JSON.stringify(saved));render(all);toast(saved.includes(t)?'Saved':'Removed');}
-function toast(m){let t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',2000);}
 load();
 </script>
 </body>
