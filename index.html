@@ -1,58 +1,72 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Fourth Pillar News - Gaurav Sharma</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4th Pillar News - Ghaziabad</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui;background:#f0f2f5;color:#111}
-.top{background:#0b2047;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;position:sticky;top:0;z-index:100}
-.top-left{display:flex;align-items:center;gap:12px}
-.top img{width:52px;height:52px;border-radius:10px;background:#fff;object-fit:cover}
-.top h1{color:#fff;font-size:19px;line-height:1.1}
-.top h1 b{color:#f2c14e;font-size:11px;display:block;font-weight:600}
-.search{padding:8px 14px;border-radius:20px;border:0;width:180px}
-.cats{background:#fff;display:flex;gap:8px;overflow:auto;padding:10px;border-bottom:1px solid #ddd}
-.cats span{background:#eef2ff;padding:6px 14px;border-radius:20px;font-size:13px;white-space:nowrap;cursor:pointer}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;padding:16px;max-width:1300px;margin:auto}
-.card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.08)}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Noto Sans Devanagari',Arial}
+body{background:#f4f4f4}
+.top{background:#b71c1c;color:#fff;padding:12px 15px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:1000}
+.top .logo{display:flex;align-items:center;gap:10px}
+.top .logo .box{background:#fff;color:#b71c1c;font-weight:800;padding:5px 10px;border-radius:5px;font-size:20px}
+.top .logo h1{font-size:22px}
+.top .rep{font-size:12px}
+.catbar{background:#fff;padding:12px;overflow-x:auto;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.1);position:sticky;top:56px;z-index:999}
+.catbar button{border:1px solid #ddd;background:#fff;padding:8px 18px;border-radius:25px;margin-right:8px;cursor:pointer;font-weight:600}
+.catbar button.active{background:#b71c1c;color:#fff;border-color:#b71c1c}
+.container{max-width:1300px;margin:auto;padding:15px;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px}
+.card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.08);transition:.2s}
+.card:hover{transform:translateY(-3px)}
 .card img{width:100%;height:200px;object-fit:cover}
-.c{padding:14px}
-.c h3{font-size:17px;line-height:1.35;margin-bottom:10px}
-.c a{color:#b71c1c;font-weight:800;text-decoration:none}
-.meta{font-size:11px;color:#666;display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
-.meta span{background:#fff3f3;border:1px solid #ffcdd2;padding:3px 8px;border-radius:20px}
+.card .body{padding:14px}
+.card .body .cat{font-size:11px;background:#ffebee;color:#b71c1c;padding:3px 8px;border-radius:10px;font-weight:700}
+.card .body h3{font-size:17px;margin:10px 0;line-height:1.4;color:#222;min-height:48px}
+.card .body .meta{font-size:12px;color:#888}
+.card .body a{display:block;margin-top:12px;background:#b71c1c;color:#fff;text-align:center;padding:10px;border-radius:8px;text-decoration:none;font-weight:700}
+footer{background:#222;color:#aaa;text-align:center;padding:20px;margin-top:20px;font-size:13px}
 </style>
 </head>
 <body>
-<div class="top">
-<div class="top-left">
-<img src="the4thpillarnews.jpg" onerror="this.src='https://iili.io/FxLxV5J.png'">
-<h1>The Fourth Pillar News<b>Sach Ka Chautha Stambh | Gaurav Sharma</b></h1>
+<div class="top"><div class="logo"><div class="box">4th</div><div><h1>PILLAR NEWS</h1><div class="rep">Reporter: Gaurav Sharma | Ghaziabad</div></div></div></div>
+<div class="catbar" id="catbar">
+<button class="active" onclick="filterCat('All',this)">All News</button>
+<button onclick="filterCat('National',this)">National</button>
+<button onclick="filterCat('International',this)">International</button>
+<button onclick="filterCat('Sports',this)">Sports</button>
+<button onclick="filterCat('Entertainment',this)">Entertainment</button>
+<button onclick="filterCat('Technology',this)">Technology</button>
+<button onclick="filterCat('Business',this)">Business</button>
+<button onclick="filterCat('Ghaziabad',this)">Ghaziabad</button>
+<button onclick="filterCat('Noida',this)">Noida</button>
 </div>
-<input id="search" class="search" placeholder="खोजें...">
-</div>
-<div class="cats"><span>सभी</span><span>भारत</span><span>राजनीति</span><span>क्राइम</span><span>टेक्नोलॉजी</span></div>
-<div id="grid" class="grid"></div>
-
+<div class="container" id="newsBox">Loading 4th Pillar News...</div>
+<footer>© 2026 4th Pillar News | Gaurav Sharma | All Rights Reserved</footer>
 <script>
 let allNews=[];
-fetch('./news.json').then(r=>r.json()).then(data=>{
- allNews=data.filter(n=>n.para1 && n.image).reverse();
+fetch('news.json').then(r=>r.json()).then(data=>{
+ let order=[1,0,2,4,3,5];
+ let rearranged=[];
+ order.forEach(i=>{if(data[i]) rearranged.push(data[i])});
+ data.forEach((n,idx)=>{if(!order.includes(idx)) rearranged.push(n)});
+ allNews=rearranged;
  render(allNews);
 });
 function render(list){
- let html='';
+ let h='';
  list.forEach(n=>{
-  let t=(n.title||'').replace(/\s*-\s*[^-]+$/,'');
-  html+=`<div class="card"><img src="${n.image}" loading="lazy" onerror="this.src='https://picsum.photos/seed/${n.id}/400/220'"><div class="c"><div class="meta"><span>Gaurav Sharma</span><span>${n.date||''}</span></div><h3>${t}</h3><a href="news.html?id=${n.id}">पूरी खबर पढ़ें →</a></div></div>`;
+  let clean=n.title.replace(/\s*-\s*(Navbharat|Dainik|Hindustan|Amar|Jagran|Times|Bhaskar|India TV|livehindustan|Navbharat Times).*$/i,'').replace('ने कहा','ने बताया').trim();
+  h+=`<div class="card"><img src="${n.image}" alt="${clean}"><div class="body"><span class="cat">${n.category}</span><h3>${clean}</h3><div class="meta">${n.date} | ${n.location} | ${n.reporter}</div><a href="news.html?id=${n.id}">पूरी खबर पढ़ें →</a></div></div>`;
  });
- document.getElementById('grid').innerHTML=html;
+ document.getElementById('newsBox').innerHTML=h;
 }
-document.getElementById('search').addEventListener('input',e=>{
- let q=e.target.value.toLowerCase();
- render(allNews.filter(n=>n.title.toLowerCase().includes(q)));
-});
+function filterCat(c,b){
+ document.querySelectorAll('.catbar button').forEach(x=>x.classList.remove('active'));
+ b.classList.add('active');
+ if(c==='All') render(allNews);
+ else render(allNews.filter(n=>n.category===c));
+}
 </script>
 </body>
 </html>
