@@ -1,72 +1,22 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>4th Pillar News - Ghaziabad</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Noto Sans Devanagari',Arial}
-body{background:#f4f4f4}
-.top{background:#b71c1c;color:#fff;padding:12px 15px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:1000}
-.top .logo{display:flex;align-items:center;gap:10px}
-.top .logo .box{background:#fff;color:#b71c1c;font-weight:800;padding:5px 10px;border-radius:5px;font-size:20px}
-.top .logo h1{font-size:22px}
-.top .rep{font-size:12px}
-.catbar{background:#fff;padding:12px;overflow-x:auto;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.1);position:sticky;top:56px;z-index:999}
-.catbar button{border:1px solid #ddd;background:#fff;padding:8px 18px;border-radius:25px;margin-right:8px;cursor:pointer;font-weight:600}
-.catbar button.active{background:#b71c1c;color:#fff;border-color:#b71c1c}
-.container{max-width:1300px;margin:auto;padding:15px;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px}
-.card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.08);transition:.2s}
-.card:hover{transform:translateY(-3px)}
-.card img{width:100%;height:200px;object-fit:cover}
-.card .body{padding:14px}
-.card .body .cat{font-size:11px;background:#ffebee;color:#b71c1c;padding:3px 8px;border-radius:10px;font-weight:700}
-.card .body h3{font-size:17px;margin:10px 0;line-height:1.4;color:#222;min-height:48px}
-.card .body .meta{font-size:12px;color:#888}
-.card .body a{display:block;margin-top:12px;background:#b71c1c;color:#fff;text-align:center;padding:10px;border-radius:8px;text-decoration:none;font-weight:700}
-footer{background:#222;color:#aaa;text-align:center;padding:20px;margin-top:20px;font-size:13px}
-</style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4th Pillar News - Latest News</title>
+<style>body{font-family:Arial,sans-serif;margin:0;background:#f5f5f5}.header{background:#b30000;color:#fff;padding:15px;text-align:center}.container{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:15px;padding:15px}.card{background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 5px rgba(0,0,0,0.1)}.card img{width:100%;height:180px;object-fit:cover}.card h3{padding:10px;margin:0;font-size:16px}.card p{padding:0 10px 10px;color:#666;font-size:13px}</style>
 </head>
 <body>
-<div class="top"><div class="logo"><div class="box">4th</div><div><h1>PILLAR NEWS</h1><div class="rep">Reporter: Gaurav Sharma | Ghaziabad</div></div></div></div>
-<div class="catbar" id="catbar">
-<button class="active" onclick="filterCat('All',this)">All News</button>
-<button onclick="filterCat('National',this)">National</button>
-<button onclick="filterCat('International',this)">International</button>
-<button onclick="filterCat('Sports',this)">Sports</button>
-<button onclick="filterCat('Entertainment',this)">Entertainment</button>
-<button onclick="filterCat('Technology',this)">Technology</button>
-<button onclick="filterCat('Business',this)">Business</button>
-<button onclick="filterCat('Ghaziabad',this)">Ghaziabad</button>
-<button onclick="filterCat('Noida',this)">Noida</button>
-</div>
-<div class="container" id="newsBox">Loading 4th Pillar News...</div>
-<footer>© 2026 4th Pillar News | Gaurav Sharma | All Rights Reserved</footer>
+<div class="header"><h1>4th Pillar News</h1><a href="news.html" style="color:#fff">All News</a></div>
+<div class="container" id="news-container"></div>
 <script>
-let allNews=[];
 fetch('news.json').then(r=>r.json()).then(data=>{
- let order=[1,0,2,4,3,5];
- let rearranged=[];
- order.forEach(i=>{if(data[i]) rearranged.push(data[i])});
- data.forEach((n,idx)=>{if(!order.includes(idx)) rearranged.push(n)});
- allNews=rearranged;
- render(allNews);
+  let latest = data.slice(0,12); // HOME PE SIRF 12 LATEST
+  let html = '';
+  latest.forEach(n=>{
+    html += `<div class="card" onclick="window.location='article.html?id=${n.id}'"><img src="${n.image}"><h3>${n.title}</h3><p>${n.category} | ${n.date}</p></div>`;
+  });
+  document.getElementById('news-container').innerHTML = html;
 });
-function render(list){
- let h='';
- list.forEach(n=>{
-  let clean=n.title.replace(/\s*-\s*(Navbharat|Dainik|Hindustan|Amar|Jagran|Times|Bhaskar|India TV|livehindustan|Navbharat Times).*$/i,'').replace('ने कहा','ने बताया').trim();
-  h+=`<div class="card"><img src="${n.image}" alt="${clean}"><div class="body"><span class="cat">${n.category}</span><h3>${clean}</h3><div class="meta">${n.date} | ${n.location} | ${n.reporter}</div><a href="news.html?id=${n.id}">पूरी खबर पढ़ें →</a></div></div>`;
- });
- document.getElementById('newsBox').innerHTML=h;
-}
-function filterCat(c,b){
- document.querySelectorAll('.catbar button').forEach(x=>x.classList.remove('active'));
- b.classList.add('active');
- if(c==='All') render(allNews);
- else render(allNews.filter(n=>n.category===c));
-}
 </script>
 </body>
 </html>
