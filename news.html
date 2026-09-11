@@ -1,37 +1,21 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>4th Pillar News Detail</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Noto Sans Devanagari',Arial}
-body{background:#fff;color:#222}
-.header{background:#b71c1c;color:#fff;padding:12px 15px;display:flex;align-items:center;gap:15px;position:sticky;top:0}
-.header a{color:#fff;text-decoration:none;font-size:18px}
-.main{max-width:800px;margin:auto;padding:18px}
-.main h1{font-size:26px;line-height:1.4;margin-bottom:12px}
-.meta{background:#f5f5f5;padding:10px;border-radius:8px;font-size:13px;color:#666;margin-bottom:15px}
-.main img{width:100%;border-radius:12px;margin-bottom:15px;max-height:450px;object-fit:cover}
-.main p{font-size:17px;line-height:1.8;margin-bottom:14px;color:#333}
-.authorBox{margin-top:25px;border-top:2px solid #b71c1c;padding:15px;background:#fff8f8;border-radius:10px;display:flex;gap:12px;align-items:center}
-.authorBox .logoBox{background:#b71c1c;color:#fff;width:50px;height:50px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:800}
-.share{margin-top:20px;display:flex;gap:10px}
-.share a{background:#25D366;color:#fff;padding:10px 18px;border-radius:25px;text-decoration:none;font-weight:700}
-</style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All News - 4th Pillar</title>
+<style>body{font-family:Arial,sans-serif;margin:0;background:#f5f5f5}.header{background:#b30000;color:#fff;padding:15px;text-align:center}.container{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:15px;padding:15px}.card{background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 5px rgba(0,0,0,0.1)}.card img{width:100%;height:180px;object-fit:cover}.card h3{padding:10px;margin:0;font-size:16px}.card p{padding:0 10px 10px;color:#666;font-size:13px}</style>
 </head>
 <body>
-<div class="header"><a href="index.html">←</a><b>4th PILLAR NEWS</b></div>
-<div class="main" id="detail">Loading...</div>
+<div class="header"><h1>All News - 4th Pillar</h1><a href="index.html" style="color:#fff">Home</a></div>
+<div class="container" id="all-news"></div>
 <script>
-let p=new URLSearchParams(location.search);let id=p.get('id');
-fetch('news.json').then(r=>r.json()).then(d=>{
- let n=d.find(x=>x.id==id);
- if(!n){document.getElementById('detail').innerHTML='News Not Found';return;}
- let clean=n.title.replace(/\s*-\s*(Navbharat|Dainik|Hindustan|Amar|Jagran|Times|Bhaskar|India TV|livehindustan).*$/i,'').replace('ने कहा','ने बताया');
- document.title=clean+' - 4th Pillar';
- let html=`<h1>${clean}</h1><div class="meta">${n.category} | ${n.date} | ${n.reporter} | ${n.location}</div><img src="${n.image}" alt=""><p><b>${n.para1}</b></p><p>${n.para2}</p><p>${n.para3}</p><p>${n.para4}</p><p>${n.para5}</p><p>${n.para6}</p><p>${n.para7}</p><p>${n.para8}</p><div class="authorBox"><div class="logoBox">4th</div><div><b>Reporter: Gaurav Sharma</b><br>Location: ${n.location}<br>4th Pillar News - Ghaziabad Ki Awaaz</div></div><div class="share"><a href="https://wa.me/?text=${encodeURIComponent(location.href)}">WhatsApp Share</a><a style="background:#b71c1c" href="index.html">Home</a></div>`;
- document.getElementById('detail').innerHTML=html;
+fetch('news.json').then(r=>r.json()).then(data=>{
+  let all = data; // YAHAN SAARI 500 DIKHENGI - DELETE NAHI HOGI
+  let html = '';
+  all.forEach(n=>{
+    html += `<div class="card" onclick="window.location='article.html?id=${n.id}'"><img src="${n.image}"><h3>${n.title}</h3><p>${n.category} | ${n.date} | ${n.location}</p></div>`;
+  });
+  document.getElementById('all-news').innerHTML = html;
 });
 </script>
 </body>
