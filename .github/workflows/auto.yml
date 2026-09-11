@@ -1,32 +1,22 @@
 name: Auto News Update
-
 on:
   schedule:
     - cron: '*/30 * * * *'
   workflow_dispatch:
 
 jobs:
-  build:
+  update:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-
-      - name: Install libraries
-        run: pip install feedparser requests beautifulsoup4 lxml
-
-      - name: Run news script
-        run: python news.py
-
-      - name: Commit and Push
-        run: |
+      - run: pip install feedparser
+      - run: python news.py
+      - run: |
           git config --global user.name "4thPillarBot"
           git config --global user.email "bot@4thpillar.news"
           git add news.json
-          git diff --staged --quiet || git commit -m "auto: update news"
+          git diff --staged --quiet || git commit -m "auto update"
           git push
