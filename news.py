@@ -53,7 +53,7 @@ for url in RSS:
             "link": f"article.html?id={len(all_news)}",
             "category": "Latest",
             "date": "11 September 2026",
-            "reporter": "Akash Sharma",
+            "reporter": "Gaurav Sharma",
             "source": "4th Pillar News"
         })
         if len(all_news)>=18: break
