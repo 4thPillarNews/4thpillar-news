@@ -1,22 +1,13 @@
 <!DOCTYPE html>
-<html lang="hi">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>4th Pillar News - Latest News</title>
-<style>body{font-family:Arial,sans-serif;margin:0;background:#f5f5f5}.header{background:#b30000;color:#fff;padding:15px;text-align:center}.container{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:15px;padding:15px}.card{background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 5px rgba(0,0,0,0.1);cursor:pointer}.card img{width:100%;height:180px;object-fit:cover}.card h3{padding:10px;margin:0;font-size:16px}.card p{padding:0 10px 10px;color:#666;font-size:13px}</style>
-</head>
+<html lang="hi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>4th Pillar News</title>
+<style>body{margin:0;font-family:Arial;background:#f2f2f2}.top{background:#b30000;padding:10px 15px;display:flex;align-items:center;gap:10px}.top img{height:36px;width:36px;border-radius:50%;background:#fff}.top a{color:#fff;text-decoration:none;font-weight:bold;font-size:19px}.grid{max-width:800px;margin:auto;padding:10px;display:grid;gap:12px}.card{background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 5px #0002}.card img{width:100%;height:200px;object-fit:cover}.card.t{padding:10px;font-weight:bold;font-size:17px;color:#222}.card.m{padding:0 10px 10px;color:#666;font-size:13px}</style></head>
 <body>
-<div class="header"><h1>4th Pillar News</h1><a href="news.html" style="color:#fff">All News</a></div>
-<div class="container" id="news-container">Loading...</div>
+<div class="top"><img src="logo.png" onerror="this.src='https://via.placeholder.com/36'"><a href="index.html">4th Pillar News</a></div>
+<div class="grid" id="g"></div>
 <script>
-fetch('news.json').then(r=>r.json()).then(data=>{
-  let latest = data.slice(0,12);
-  let html = '';
-  latest.forEach(n=>{
-    html += `<div class="card" onclick="window.location='article.html?id=${n.id}'"><img src="${n.image}" onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800'"><h3>${n.title}</h3><p>${n.category} | ${n.date}</p></div>`;
-  });
-  document.getElementById('news-container').innerHTML = html;
+fetch('news.json?v='+Date.now()).then(r=>r.json()).then(list=>{
+ document.getElementById('g').innerHTML=list.map(n=>`
+  <a href="${n.link}" style="text-decoration:none"><div class="card"><img src="${n.image}"><div class="t">${n.title}</div><div class="m">By ${n.reporter} | ${n.date}</div></div></a>
+ `).join('');
 });
-</script>
-</body>
-</html>
+</script></body></html>
