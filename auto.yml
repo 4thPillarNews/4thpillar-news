@@ -1,1 +1,23 @@
-
+name: Auto News Update
+permissions:
+  contents: write
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - run: pip install -r requirements.txt
+      - run: python news.py
+      - run: |
+          git config user.name "bot"
+          git config user.email "bot@bot.com"
+          git add news.json
+          git commit -m "auto update" || exit 0
+          git push
