@@ -1,4 +1,4 @@
-import feedparser, json
+import feedparser, json, os
 from bs4 import BeautifulSoup
 
 RSS = [
@@ -12,39 +12,49 @@ def clean(s):
 def get_image(title, nid):
     t=title.lower()
     if 'nepal' in t: q="nepal,flood"
-    elif any(x in t for x in ['visa','america','अमेरिका']): q="usa,visa"
-    elif any(x in t for x in ['putin','रूस','विमान']): q="russia,jet"
+    elif any(x in t for x in ['visa','अमेरिका','america']): q="usa,visa"
+    elif any(x in t for x in ['putin','रूस']): q="russia,jet"
     elif any(x in t for x in ['हत्या','गोली','murder','police','gurugram']): q="police,crime"
     elif 'brazil' in t or 'ब्राजील' in t: q="brazil,court"
-    elif 'तापमान' in t or 'गर्मी' in t: q="climate"
-    else: q="india,news"
-    return f"https://loremflickr.com/800/450/{q}?lock={nid}"
+    elif 'तापमान' in t or 'गर्मी' in t: q="heatwave,india"
+    else: q="india,news,breaking"
+    return f"https://source.unsplash.com/800x450/?{q}&sig={nid}"
 
-news=[]
+# Purani news load rakho
+old_news = []
+if os.path.exists('news.json'):
+    try:
+        with open('news.json','r',encoding='utf-8') as f:
+            old_news = json.load(f)
+    except: old_news = []
+
+titles_old = set([n['title'] for n in old_news])
+new_list = []
+
 for url in RSS:
     for e in feedparser.parse(url).entries[:10]:
         title=e.get('title','').strip()
-        if len(title)<10: continue
+        if len(title)<10 or title in titles_old: continue
         desc=clean(e.get('summary','') or e.get('description','') or title)
-        # Sirf asli news, koi filler nahi
-        parts = desc.split('. ')
-        p1 = '. '.join(parts[:2]) + '.' if len(parts)>=2 else desc
-        p2 = '. '.join(parts[2:4]) + '.' if len(parts)>=4 else ''
-
-        news.append({
-            "id": len(news),
+        parts=desc.split('. ')
+        p1='. '.join(parts[:2])+'.' if len(parts)>=2 else desc
+        p2='. '.join(parts[2:4])+'.' if len(parts)>=4 else ''
+        new_list.append({
+            "id": 0,
             "title": title,
-            "para1": p1,
-            "para2": p2,
-            "para3": "",
-            "para4": "",
-            "image": get_image(title, len(news)),
-            "link": f"article.html?id={len(news)}",
-            "category": "Latest",
-            "date": "11 Sep 2026",
-            "reporter": "Gaurav Sharma",
-            "source": "4th Pillar News"
+            "para1": p1, "para2": p2, "para3": "", "para4": "",
+            "image": "",
+            "link": "", "category": "Latest", "date": "11 Sep 2026",
+            "reporter": "Gaurav Sharma", "source": "4th Pillar News"
         })
 
+# Nayi + Purani jod do
+full = new_list + old_news
+for i, n in enumerate(full):
+    n['id'] = i
+    n['link'] = f"article.html?id={i}"
+    n['image'] = get_image(n['title'], i)
+    full[i] = n
+
 with open('news.json','w',encoding='utf-8') as f:
-    json.dump(news,f,ensure_ascii=False,indent=2)
+    json.dump(full[:50],f,ensure_ascii=False,indent=2)
